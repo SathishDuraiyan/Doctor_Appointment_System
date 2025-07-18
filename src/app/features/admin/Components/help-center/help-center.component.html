@@ -1,0 +1,624 @@
+<div class="flex flex-col h-full">
+  <!-- Navigation Bar -->
+  <div class="bg-white p-4 flex justify-between items-center shadow-sm">
+    <div class="flex items-center space-x-4">
+      <button type="button" class="bg-teal-800 text-white px-3 py-1 rounded flex items-center text-sm" (click)="goBack()">
+        <i class="fas fa-arrow-left mr-1"></i> Back
+      </button>
+      <h1 class="text-xl font-semibold">Admin Help Center</h1>
+    </div>
+    <div class="flex items-center space-x-2">
+      <span class="text-sm text-gray-600">Today's Date</span>
+      <span class="text-sm font-semibold">{{ currentDate }}</span>
+      <div class="w-6 h-6 flex items-center justify-center">
+        <i class="fas fa-calendar-alt text-gray-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-4 py-2 text-sm text-gray-600">
+    Admin > Help Center
+  </div>
+
+  <!-- Help Content -->
+  <div class="flex flex-col md:flex-row p-6 flex-grow">
+    <!-- Help Navigation -->
+    <div class="w-full md:w-64 bg-white rounded-lg shadow-sm p-4 mb-6 md:mb-0 md:mr-6">
+      <h3 class="font-semibold text-lg mb-4 text-gray-800">Help Topics</h3>
+      <ul class="space-y-2">
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'dashboard-help'" (click)="showHelpSection('dashboard-help')">
+          <i class="fas fa-th-large mr-2"></i> Dashboard
+        </li>
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'doctors-help'" (click)="showHelpSection('doctors-help')">
+          <i class="fas fa-user-md mr-2"></i> Doctors Management
+        </li>
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'patients-help'" (click)="showHelpSection('patients-help')">
+          <i class="fas fa-wheelchair mr-2"></i> Patient Management
+        </li>
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'content-help'" (click)="showHelpSection('content-help')">
+          <i class="fas fa-file-alt mr-2"></i> Content Management
+        </li>
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'reports-help'" (click)="showHelpSection('reports-help')">
+          <i class="fas fa-chart-bar mr-2"></i> Report Management
+        </li>
+        <li class="help-nav-item p-3 rounded" [class.active]="activeSection === 'faq-help'" (click)="showHelpSection('faq-help')">
+          <i class="fas fa-question-circle mr-2"></i> FAQs
+        </li>
+      </ul>
+    </div>
+
+    <!-- Help Sections -->
+    <div class="flex-1 bg-white rounded-lg shadow-sm p-6">
+      <!-- Dashboard Help -->
+      <div id="dashboard-help" class="help-section" [class.active]="activeSection === 'dashboard-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-calendar-check text-blue-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Appointment Statistics</h3>
+            </div>
+            <p class="text-gray-600">
+              The dashboard provides real-time statistics on appointments including:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Total appointments</li>
+              <li>Pending appointments</li>
+              <li>Confirmed appointments</li>
+              <li>Cancelled appointments</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-user-md text-green-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Doctor Schedules</h3>
+            </div>
+            <p class="text-gray-600">
+              View and manage today's doctor schedules including:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Doctor names and departments</li>
+              <li>Schedule timings</li>
+              <li>Available slots</li>
+              <li>Booked appointments</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-purple-100 p-3 rounded-full mr-4">
+                <i class="fas fa-calendar-day text-purple-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Upcoming Appointments</h3>
+            </div>
+            <p class="text-gray-600">
+              Track upcoming appointments for the next 7 days with details like:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Patient and doctor information</li>
+              <li>Date and time</li>
+              <li>Department</li>
+              <li>Appointment status</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                <i class="fas fa-history text-yellow-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Recent Appointments</h3>
+            </div>
+            <p class="text-gray-600">
+              Review recently completed appointments with information about:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Appointment ID</li>
+              <li>Patient details</li>
+              <li>Doctor consulted</li>
+              <li>Diagnosis and prescription</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-lightbulb text-blue-500"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800">Pro Tip</h3>
+              <div class="mt-2 text-sm text-blue-700">
+                <p>Use the date range filter and department dropdown to quickly find specific schedules and appointments.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctors Management Help -->
+      <div id="doctors-help" class="help-section" [class.active]="activeSection === 'doctors-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Doctors Management</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-teal-100 p-3 rounded-full mr-4">
+                <i class="fas fa-list text-teal-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Doctor Listing</h3>
+            </div>
+            <p class="text-gray-600">
+              View all doctors in the system with key information:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Doctor ID and name</li>
+              <li>Specialties and department</li>
+              <li>Contact information</li>
+              <li>Current status</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-plus-circle text-green-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Add New Doctors</h3>
+            </div>
+            <p class="text-gray-600">
+              Add new doctors to the system by filling out:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Basic information (name, ID)</li>
+              <li>Professional details (specialties, qualifications)</li>
+              <li>Contact information</li>
+              <li>Department assignment</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-edit text-blue-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Edit Doctor Information</h3>
+            </div>
+            <p class="text-gray-600">
+              Update existing doctor records including:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Specialties and qualifications</li>
+              <li>Contact details</li>
+              <li>Department changes</li>
+              <li>Account status</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-red-100 p-3 rounded-full mr-4">
+                <i class="fas fa-trash-alt text-red-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Remove Doctors</h3>
+            </div>
+            <p class="text-gray-600">
+              Deactivate or remove doctors from the system:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Confirmation before deletion</li>
+              <li>Option to deactivate instead of delete</li>
+              <li>Automatic removal from schedules</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Important Note</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>When removing a doctor, all their future appointments will be automatically cancelled and patients will be notified.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patients Management Help -->
+      <div id="patients-help" class="help-section" [class.active]="activeSection === 'patients-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Patient Management</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-purple-100 p-3 rounded-full mr-4">
+                <i class="fas fa-list text-purple-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Patient Directory</h3>
+            </div>
+            <p class="text-gray-600">
+              View all patients with comprehensive information:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Patient ID and name</li>
+              <li>Demographic information</li>
+              <li>Medical history summary</li>
+              <li>Appointment history</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-search text-blue-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Advanced Search</h3>
+            </div>
+            <p class="text-gray-600">
+              Find patients using multiple filters:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>By patient ID or name</li>
+              <li>By gender or blood group</li>
+              <li>By appointment date range</li>
+              <li>By status or reason for visit</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-eye text-green-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Patient Profiles</h3>
+            </div>
+            <p class="text-gray-600">
+              View detailed patient profiles containing:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Complete contact information</li>
+              <li>Medical history and allergies</li>
+              <li>Current and past medications</li>
+              <li>Insurance information</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-teal-100 p-3 rounded-full mr-4">
+                <i class="fas fa-envelope text-teal-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Patient Communication</h3>
+            </div>
+            <p class="text-gray-600">
+              Communicate directly with patients:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Send appointment reminders</li>
+              <li>Share test results</li>
+              <li>Provide follow-up instructions</li>
+              <li>Send general notifications</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-lightbulb text-blue-500"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800">Pro Tip</h3>
+              <div class="mt-2 text-sm text-blue-700">
+                <p>Use the status filter to quickly find active patients, those with upcoming appointments, or those who haven't visited in a while.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Management Help -->
+      <div id="content-help" class="help-section" [class.active]="activeSection === 'content-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Content Management</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-red-100 p-3 rounded-full mr-4">
+                <i class="fas fa-images text-red-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Homepage Banners</h3>
+            </div>
+            <p class="text-gray-600">
+              Manage rotating banners on the homepage:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Add new promotional banners</li>
+              <li>Edit existing banner content</li>
+              <li>Set display order and duration</li>
+              <li>Activate/deactivate banners</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-purple-100 p-3 rounded-full mr-4">
+                <i class="fas fa-info-circle text-purple-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">About Us Section</h3>
+            </div>
+            <p class="text-gray-600">
+              Update the hospital's about information:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Hospital history and mission</li>
+              <li>Key achievements and milestones</li>
+              <li>Management team information</li>
+              <li>Vision and values</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                <i class="fas fa-stethoscope text-yellow-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Specialties Section</h3>
+            </div>
+            <p class="text-gray-600">
+              Showcase hospital specialties and services:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Add new medical specialties</li>
+              <li>Highlight key departments</li>
+              <li>Feature advanced treatments</li>
+              <li>Include success statistics</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-phone-alt text-green-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Contact Information</h3>
+            </div>
+            <p class="text-gray-600">
+              Manage hospital contact details:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Update address and locations</li>
+              <li>Set emergency contact numbers</li>
+              <li>Manage department-specific contacts</li>
+              <li>Add map and directions</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Important Note</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>Changes to website content may take a few minutes to reflect on the live site due to caching. Clear your browser cache if changes don't appear immediately.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports Management Help -->
+      <div id="reports-help" class="help-section" [class.active]="activeSection === 'reports-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Report Management</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-user-md text-blue-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Doctor Reports</h3>
+            </div>
+            <p class="text-gray-600">
+              Generate detailed reports on doctors:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>List all doctors with filters</li>
+              <li>View appointment statistics by doctor</li>
+              <li>Analyze department-wise performance</li>
+              <li>Track doctor availability</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-procedures text-green-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Patient Reports</h3>
+            </div>
+            <p class="text-gray-600">
+              Create comprehensive patient reports:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Demographic analysis</li>
+              <li>Appointment history reports</li>
+              <li>Patient volume by department</li>
+              <li>Follow-up compliance tracking</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-purple-100 p-3 rounded-full mr-4">
+                <i class="fas fa-file-export text-purple-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Export Options</h3>
+            </div>
+            <p class="text-gray-600">
+              Multiple export formats available:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>PDF for printing and sharing</li>
+              <li>Excel for data analysis</li>
+              <li>CSV for database integration</li>
+              <li>Custom date range selection</li>
+            </ul>
+          </div>
+
+          <div class="feature-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center mb-4">
+              <div class="bg-teal-100 p-3 rounded-full mr-4">
+                <i class="fas fa-chart-line text-teal-600"></i>
+              </div>
+              <h3 class="text-lg font-semibold">Analytics Dashboard</h3>
+            </div>
+            <p class="text-gray-600">
+              Visualize key hospital metrics:
+            </p>
+            <ul class="list-disc pl-5 mt-2 text-gray-600">
+              <li>Appointment trends over time</li>
+              <li>Department performance</li>
+              <li>Patient satisfaction scores</li>
+              <li>Revenue and billing reports</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-lightbulb text-blue-500"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800">Pro Tip</h3>
+              <div class="mt-2 text-sm text-blue-700">
+                <p>Use the custom date range feature to compare performance across different time periods (month-over-month, year-over-year).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQs Help -->
+      <div id="faq-help" class="help-section" [class.active]="activeSection === 'faq-help'">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Frequently Asked Questions</h2>
+
+        <div class="space-y-4">
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <button class="faq-question w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-medium" (click)="toggleFaqAnswer($event)">
+              How do I reset a doctor's password?
+            </button>
+            <div class="faq-answer p-4 border-t border-gray-200 hidden">
+              <p class="text-gray-600">
+                To reset a doctor's password:
+              </p>
+              <ol class="list-decimal pl-5 mt-2 text-gray-600">
+                <li>Go to Doctors Management</li>
+                <li>Find the doctor in the list</li>
+                <li>Click on "Edit"</li>
+                <li>Scroll to the password section</li>
+                <li>Click "Reset Password"</li>
+                <li>The doctor will receive an email with password reset instructions</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <button class="faq-question w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-medium" (click)="toggleFaqAnswer($event)">
+              How can I bulk upload patient data?
+            </button>
+            <div class="faq-answer p-4 border-t border-gray-200 hidden">
+              <p class="text-gray-600">
+                Bulk patient upload requires a CSV file with specific columns:
+              </p>
+              <ul class="list-disc pl-5 mt-2 text-gray-600">
+                <li>Download our template CSV file from the Patient Management page</li>
+                <li>Fill in patient data following the format</li>
+                <li>Go to Patient Management > Import</li>
+                <li>Upload your CSV file</li>
+                <li>Review the preview and confirm import</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <button class="faq-question w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-medium" (click)="toggleFaqAnswer($event)">
+              Why can't I see my content changes on the live site?
+            </button>
+            <div class="faq-answer p-4 border-t border-gray-200 hidden">
+              <p class="text-gray-600">
+                Content changes may not appear immediately due to:
+              </p>
+              <ul class="list-disc pl-5 mt-2 text-gray-600">
+                <li>Browser caching - try clearing your cache or using incognito mode</li>
+                <li>CDN caching - changes may take up to 15 minutes to propagate</li>
+                <li>If you still don't see changes, contact IT support to check for deployment issues</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <button class="faq-question w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-medium" (click)="toggleFaqAnswer($event)">
+              How do I generate a custom report?
+            </button>
+            <div class="faq-answer p-4 border-t border-gray-200 hidden">
+              <p class="text-gray-600">
+                To create a custom report:
+              </p>
+              <ol class="list-decimal pl-5 mt-2 text-gray-600">
+                <li>Go to Report Management</li>
+                <li>Select either Doctor or Patient reports</li>
+                <li>Apply filters for your specific needs</li>
+                <li>Click "Generate Report"</li>
+                <li>Choose your export format (PDF, Excel, CSV)</li>
+                <li>Save or print the report</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <button class="faq-question w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-medium" (click)="toggleFaqAnswer($event)">
+              What should I do if the system is running slow?
+            </button>
+            <div class="faq-answer p-4 border-t border-gray-200 hidden">
+              <p class="text-gray-600">
+                If the system is slow, try these steps:
+              </p>
+              <ul class="list-disc pl-5 mt-2 text-gray-600">
+                <li>Refresh your browser</li>
+                <li>Clear your browser cache</li>
+                <li>Try a different browser (Chrome is recommended)</li>
+                <li>Check your internet connection</li>
+                <li>If the issue persists, contact IT support with details about what you were doing when the slowness occurred</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
+          <p class="text-gray-600 mb-4">
+            If you can't find the answer to your question here, please contact our support team.
+          </p>
+          <button class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">
+            <i class="fas fa-envelope mr-2"></i> Contact Support
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

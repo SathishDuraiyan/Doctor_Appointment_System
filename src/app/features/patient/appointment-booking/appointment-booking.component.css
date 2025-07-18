@@ -1,0 +1,371 @@
+/* Appointment Booking Styles */
+.category-card {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-card {
+  transition: all 0.3s ease;
+  border: 2px solid #e5e7eb;
+}
+
+.doctor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #14b8a6;
+}
+
+.slot-card {
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.slot-card:hover {
+  border-color: #14b8a6;
+  background-color: #f0fdfa;
+}
+
+.slot-card.selected {
+  border-color: #14b8a6;
+  background-color: #14b8a6;
+  color: white;
+}
+
+/* Progress Steps */
+.progress-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.2);
+}
+
+.progress-step.completed {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  color: white;
+}
+
+.progress-step.pending {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.progress-line {
+  height: 2px;
+  width: 64px;
+  background: #e5e7eb;
+  transition: background 0.3s ease;
+}
+
+.progress-line.completed {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #14b8a6;
+  border: 1px solid #14b8a6;
+}
+
+.btn-outline:hover {
+  background: #14b8a6;
+  color: white;
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #14b8a6;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Calendar Styles */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.calendar-day {
+  background: white;
+  min-height: 120px;
+  padding: 0.5rem;
+}
+
+.calendar-day-header {
+  background: #f9fafb;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.calendar-day-number {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.calendar-day-number.today {
+  background: #14b8a6;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Slot Styles */
+.slot-item {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.slot-item:hover {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+}
+
+.slot-item.selected {
+  border-color: #14b8a6;
+  background: #14b8a6;
+  color: white;
+}
+
+.slot-available {
+  border-color: #10b981;
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.slot-limited {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.slot-full {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #991b1b;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Summary Card */
+.summary-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Navigation */
+.nav-button {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .calendar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-day {
+    min-height: 80px;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .summary-card {
+    padding: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}

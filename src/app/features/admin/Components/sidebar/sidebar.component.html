@@ -1,0 +1,84 @@
+<div class="w-64 bg-teal-800 text-white h-screen fixed">
+  <div class="p-4 bg-teal-800 flex items-center space-x-4 cursor-pointer font-body" (click)="navigateTo('adminProfile')">
+    <div class="w-12 h-12 rounded-full bg-white overflow-hidden flex items-center justify-center">
+      <img *ngIf="adminProfile.avatar; else defaultIcon" [src]="adminProfile.avatar" alt="Admin Avatar" class="w-10 h-10 rounded-full" />
+      <ng-template #defaultIcon>
+        <i class="fas fa-user text-3xl text-cyan-800 font-body"></i>
+      </ng-template>
+    </div>
+    <div>
+      <h2 class="font-semibold font-body">{{ adminProfile.name }}</h2>
+      <p class="text-xs text-cyan-100 font-body">{{ adminProfile.email }}</p>
+    </div>
+  </div>
+
+  <div class="p-2 font-body">
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'dashboard'"
+         (click)="navigateTo('dashboard')">
+      <i class="fas fa-th-large font-body"></i>
+      <span>Dashboard</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'doctors'"
+         (click)="navigateTo('doctors')">
+      <i class="fas fa-user-md font-body"></i>
+      <span>Doctors Management</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'doctor-schedule'"
+         (click)="navigateTo('doctor-schedule')">
+      <i class="fas fa-calendar-alt font-body"></i>
+      <span>Doctor Schedules</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'appointments'"
+         (click)="navigateTo('appointments')">
+      <i class="fas fa-calendar-check font-body"></i>
+      <span>Appointments</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'patients'"
+         (click)="navigateTo('patients')">
+      <i class="fas fa-wheelchair font-body"></i>
+      <span>Patient Management</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'contentmanagement'"
+         (click)="navigateTo('contentmanagement')">
+      <i class="fas fa-file-alt font-body"></i>
+      <span>Content Management</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'reports'"
+         (click)="navigateTo('reports')">
+      <i class="fas fa-chart-bar font-body"></i>
+      <span>Report Management</span>
+    </div>
+  </div>
+
+  <div class="absolute bottom-0 w-64 p-2 font-body">
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3 font-body"
+         [class.active]="activeRoute === 'help'"
+         (click)="navigateTo('help')">
+      <i class="fas fa-question-circle font-body"></i>
+      <span>Help Center</span>
+    </div>
+    <div class="cursor-pointer flex items-center justify-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20 mb-2 font-body" (click)="openLogoutModal()">
+      <span>Logout</span>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div *ngIf="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 font-body">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-sm relative animate-fadeIn">
+      <button (click)="closeLogoutModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl font-bold focus:outline-none font-body">&times;</button>
+      <h2 class="text-xl font-bold mb-4 text-gray-800 font-body">Confirm Logout</h2>
+      <p class="mb-6 text-gray-700 font-body">Are you sure you want to logout?</p>
+      <div class="flex justify-end space-x-3 font-body">
+        <button (click)="closeLogoutModal()" class="px-5 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition font-body">Cancel</button>
+        <button (click)="logout()" class="px-5 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition font-body">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>

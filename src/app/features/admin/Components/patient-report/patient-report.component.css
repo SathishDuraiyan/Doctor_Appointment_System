@@ -1,0 +1,229 @@
+/* patient-report.component.css */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition-colors {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for table */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Hover effects */
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+
+.hover\:bg-gray-600:hover {
+  background-color: #4b5563;
+}
+
+.hover\:bg-red-700:hover {
+  background-color: #b91c1c;
+}
+
+.hover\:bg-green-700:hover {
+  background-color: #15803d;
+}
+
+.hover\:text-teal-900:hover {
+  color: #134e4a;
+}
+
+/* Focus styles */
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.5);
+}
+
+.focus\:ring-teal-500:focus {
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.5);
+}
+
+.focus\:ring-gray-500:focus {
+  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.5);
+}
+
+.focus\:ring-red-500:focus {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
+}
+
+.focus\:ring-green-500:focus {
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+}
+
+.focus\:border-teal-500:focus {
+  border-color: #14b8a6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .py-4 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+/* Status badge styles */
+.bg-green-100 {
+  background-color: #dcfce7;
+}
+
+.text-green-800 {
+  color: #166534;
+}
+
+.bg-red-100 {
+  background-color: #fee2e2;
+}
+
+.text-red-800 {
+  color: #991b1b;
+}
+
+/* Table enhancements */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead tr th:first-child {
+  border-top-left-radius: 0.5rem;
+}
+
+thead tr th:last-child {
+  border-top-right-radius: 0.5rem;
+}
+
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 0.5rem;
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Modal Styles */
+.fixed.inset-0 {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bg-white.rounded-lg.shadow-xl {
+  animation: slideIn 0.3s ease-out;
+  transform: translateY(0);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal backdrop blur effect */
+.bg-black.bg-opacity-50 {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal content styling */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for modal */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Enhanced focus styles for modal */
+.modal-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 119, 0.3);
+}
+
+/* Status badge enhanced styling */
+.status-badge {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+/* Link hover effects in modal */
+.modal-link:hover {
+  text-decoration: underline;
+}
+
+/* Grid spacing in modal */
+.modal-grid {
+  gap: 1.5rem;
+}
+
+/* Enhanced button styling in modal */
+.modal-footer-button {
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.modal-footer-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

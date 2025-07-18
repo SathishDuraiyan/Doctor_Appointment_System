@@ -1,0 +1,46 @@
+.sidebar-item.active {
+  background-color: #0a7a7c;
+}
+
+.patient-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.patient-table th {
+  background-color: #f0fdf4;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.patient-table tr:hover {
+  background-color: #f0fdf4;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.status-confirmed {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.pagination-btn {
+  min-width: 2.5rem;
+}

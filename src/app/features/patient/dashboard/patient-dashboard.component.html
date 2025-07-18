@@ -1,0 +1,324 @@
+<!-- Patient Dashboard Content -->
+<div class="p-8">
+  <!-- Profile Completion Prompt -->
+  <div *ngIf="showProfileCompletionPrompt" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>Complete Your Profile:</strong> Please fill in your basic details to get the most out of our services.
+          </p>
+        </div>
+      </div>
+      <div class="flex space-x-2">
+        <button
+          (click)="completeProfile()"
+          class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors text-sm">
+          Complete Profile
+        </button>
+        <button
+          (click)="dismissPrompt()"
+          class="text-yellow-600 hover:text-yellow-800 transition-colors text-sm">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{currentUser?.name || 'Patient'}}!</h1>
+      <p class="text-gray-600">Here's what's happening with your healthcare today.</p>
+    </div>
+    <div class="flex space-x-2">
+      <button (click)="refreshDashboard()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              title="Refresh dashboard data">
+        <i class="fas fa-sync-alt mr-2"></i>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-blue-100 text-sm font-medium">Upcoming Appointments</p>
+          <p class="text-2xl font-bold">{{upcomingAppointmentsCount}}</p>
+        </div>
+        <div class="bg-white/20 rounded-full p-3">
+          <i class="fas fa-calendar-check text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-green-100 text-sm font-medium">Total Appointments</p>
+          <p class="text-2xl font-bold">{{totalAppointments}}</p>
+        </div>
+        <div class="bg-white/20 rounded-full p-3">
+          <i class="fas fa-calendar text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-purple-100 text-sm font-medium">Completed Visits</p>
+          <p class="text-2xl font-bold">{{completedAppointments}}</p>
+        </div>
+        <div class="bg-white/20 rounded-full p-3">
+          <i class="fas fa-user-check text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-orange-100 text-sm font-medium">Health Score</p>
+          <p class="text-2xl font-bold">{{completedAppointments > 0 ? (completedAppointments * 10) + '%' : 'N/A'}}</p>
+        </div>
+        <div class="bg-white/20 rounded-full p-3">
+          <i class="fas fa-heart text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column - Appointments & Quick Actions -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Upcoming Appointments -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">Upcoming Appointments</h2>
+          <div class="flex space-x-2">
+            <button (click)="viewAllAppointments()" class="text-blue-600 hover:text-blue-800 font-medium text-sm">View All</button>
+            <span *ngIf="isLoading" class="text-gray-500 text-sm">
+              <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+            </span>
+          </div>
+        </div>
+
+        <div class="space-y-4" *ngIf="!isLoading && upcomingAppointments.length > 0; else appointmentPlaceholder">
+          <div *ngFor="let appointment of upcomingAppointments.slice(0, 3)" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+              <i [class]="getStatusIcon(appointment.status)" class="text-blue-600"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-gray-900">{{appointment.doctorName}}</p>
+              <p class="text-sm text-gray-600">{{appointment.doctorSpecialization}}</p>
+              <p class="text-sm text-gray-500">{{formatDate(appointment.appointmentDate)}} at {{formatTime(appointment.appointmentTime)}}</p>
+              <p class="text-xs text-gray-400">{{appointment.purpose}}</p>
+            </div>
+            <div class="flex flex-col items-end space-y-1">
+              <span [class]="'px-2 py-1 rounded-full text-xs font-medium ' + getStatusColor(appointment.status)">
+                {{appointment.status}}
+              </span>
+              <div class="flex space-x-1">
+                <button (click)="viewMedicalRecords()" class="text-blue-600 hover:text-blue-800 text-xs">
+                  View Details
+                </button>
+                <!-- Removed Change Date button: feature deprecated -->
+                <button *ngIf="appointment.status === 'PENDING' || appointment.status === 'CONFIRMED'"
+                        (click)="cancelAppointment(appointment.id)"
+                        class="text-red-600 hover:text-red-800 text-xs">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #appointmentPlaceholder>
+          <div *ngIf="isLoading" class="space-y-4">
+            <!-- Loading skeletons -->
+            <div *ngFor="let i of [1,2,3]" class="flex items-center p-4 bg-gray-50 rounded-lg animate-pulse">
+              <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+              <div class="flex-1">
+                <div class="h-4 bg-gray-300 rounded mb-2 w-3/4"></div>
+                <div class="h-3 bg-gray-300 rounded mb-1 w-1/2"></div>
+                <div class="h-3 bg-gray-300 rounded w-2/3"></div>
+              </div>
+              <div class="w-16 h-6 bg-gray-300 rounded"></div>
+            </div>
+          </div>
+          <div *ngIf="!isLoading && upcomingAppointments.length === 0" class="text-center py-8">
+            <i class="fas fa-calendar-alt text-gray-400 text-4xl mb-4"></i>
+            <p class="text-gray-500 mb-2">No upcoming appointments</p>
+            <p class="text-gray-400 text-sm mb-4">Find a doctor to book your first appointment</p>
+            <button (click)="quickAction('book-appointment')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              <i class="fas fa-user-md mr-2"></i>
+              Find a Doctor
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button (click)="quickAction('book-appointment')" class="quick-action-btn flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <i class="fas fa-calendar-plus text-blue-600 text-xl mb-2"></i>
+            <span class="text-sm font-medium text-blue-900">Book Appointment</span>
+          </button>
+
+          <button (click)="completeProfile()" class="quick-action-btn flex flex-col items-center p-4 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors">
+            <i class="fas fa-user-edit text-teal-600 text-xl mb-2"></i>
+            <span class="text-sm font-medium text-teal-900">Manage Profile</span>
+          </button>
+
+          <button (click)="viewAllAppointments()" class="quick-action-btn flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+            <i class="fas fa-calendar-check text-purple-600 text-xl mb-2"></i>
+            <span class="text-sm font-medium text-purple-900">My Appointments</span>
+          </button>
+
+          <button (click)="quickAction('view-records')" class="quick-action-btn flex flex-col items-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+            <i class="fas fa-file-medical text-orange-600 text-xl mb-2"></i>
+            <span class="text-sm font-medium text-orange-900">Medical Records</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Appointments -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">Recent Appointments</h2>
+          <button (click)="viewMedicalRecords()" class="text-blue-600 hover:text-blue-800 font-medium text-sm">View Medical Records</button>
+        </div>
+
+        <div class="space-y-4" *ngIf="recentAppointments.length > 0; else noRecentAppointments">
+          <div *ngFor="let appointment of recentAppointments.slice(0, 3)" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+              <i [class]="getStatusIcon(appointment.status)" [ngClass]="appointment.status === 'COMPLETED' ? 'text-green-600' : 'text-gray-600'"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-gray-900">{{appointment.doctorName}}</p>
+              <p class="text-sm text-gray-600">{{appointment.doctorSpecialization}}</p>
+              <p class="text-sm text-gray-500">{{formatDate(appointment.appointmentDate)}} at {{formatTime(appointment.appointmentTime)}}</p>
+              <p class="text-xs text-gray-400">{{appointment.purpose}}</p>
+            </div>
+            <div class="flex flex-col items-end space-y-1">
+              <span [class]="'px-2 py-1 rounded-full text-xs font-medium ' + getStatusColor(appointment.status)">
+                {{appointment.status}}
+              </span>
+              <div class="flex space-x-1" *ngIf="appointment.status === 'COMPLETED'">
+                <button (click)="quickAction('book-appointment')" class="text-blue-600 hover:text-blue-800 text-xs">
+                  Re-book
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noRecentAppointments>
+          <div class="text-center py-8">
+            <i class="fas fa-history text-gray-400 text-4xl mb-4"></i>
+            <p class="text-gray-500 mb-2">No appointment history</p>
+            <p class="text-gray-400 text-sm">Your completed appointments will appear here</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Right Column - Notifications & Recent Activity -->
+    <div class="space-y-6">
+      <!-- Notifications -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">Notifications</h2>
+          <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">{{notifications.length}}</span>
+        </div>
+
+        <div class="space-y-4" *ngIf="notifications.length > 0; else noNotifications">
+          <div *ngFor="let notification of notifications" class="flex items-start p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i class="fas fa-bell text-blue-600 text-sm"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900">{{notification.title}}</p>
+              <p class="text-xs text-gray-600">{{notification.message}}</p>
+              <p class="text-xs text-gray-500 mt-1">{{notification.time}}</p>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noNotifications>
+          <div class="text-center py-8">
+            <i class="fas fa-bell text-gray-400 text-3xl mb-4"></i>
+            <p class="text-gray-500">No new notifications</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h2>
+
+        <div class="space-y-4" *ngIf="recentActivity.length > 0; else noActivity">
+          <div *ngFor="let activity of recentActivity" class="flex items-start p-3 bg-gray-50 rounded-lg">
+            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i class="fas fa-check text-green-600 text-sm"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900">{{activity.action}}</p>
+              <p class="text-xs text-gray-600">{{activity.description}}</p>
+              <p class="text-xs text-gray-500 mt-1">{{activity.time}}</p>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noActivity>
+          <div class="text-center py-8">
+            <i class="fas fa-history text-gray-400 text-3xl mb-4"></i>
+            <p class="text-gray-500">No recent activity</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Health Tips -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Health Tips</h2>
+
+        <div class="space-y-4">
+          <div *ngFor="let tip of healthTips.slice(0, 2)"
+               class="flex items-start p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+            <div [class]="'w-10 h-10 rounded-full flex items-center justify-center mr-3 ' +
+                         (tip.color === 'blue' ? 'bg-blue-100' :
+                          tip.color === 'green' ? 'bg-green-100' :
+                          tip.color === 'purple' ? 'bg-purple-100' : 'bg-orange-100')">
+              <i [class]="tip.icon + ' ' +
+                         (tip.color === 'blue' ? 'text-teal-600' :
+                          tip.color === 'green' ? 'text-green-600' :
+                          tip.color === 'purple' ? 'text-teal-600' : 'text-orange-600') + ' text-sm'"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900 mb-1">{{tip.title}}</p>
+              <p class="text-xs text-gray-600">{{tip.tip}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Setup Modal -->
+<app-profile-setup-modal
+  [isVisible]="showProfileModal"
+  [userData]="currentUser"
+  (onClose)="closeProfileModal()"
+  (onProfileSaved)="handleProfileSaved($event)">
+</app-profile-setup-modal>

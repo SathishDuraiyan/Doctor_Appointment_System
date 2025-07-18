@@ -1,0 +1,61 @@
+<section class="bg-[#E5F5F5] px-20">
+  <div class="mx-auto px-4">
+    <h2 class="text-3xl mb-4 text-gray-700 text-center font-body">Avoid Hassles & Delays</h2>
+    <p class="text-center mb-6 text-gray-600 text-[18px] font-body">Have StreamHawk Online Service better and quicker!</p>
+    <p class="text-center mb-8 text-gray-600 text-[18px] font-body">
+      Don't worry! Find your doctor online! Book as you wish with ease.<br />
+      We offer you a free channel to service, make your appointment now.
+    </p>
+
+    <div class="flex justify-center mb-12">
+      <a href="#" class="bg-teal-700 text-white py-3 px-8 rounded text-center hover:bg-white hover:text-teal-700 hover:border-2 border-teal-700 transition-all font-body">Find Doctors</a>
+    </div>
+
+    <h2 class="font-title text-2xl mb-6 text-gray-700">GENERAL FEEDBACK</h2>
+    <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+      <form (ngSubmit)="submitForm()" #feedbackForm="ngForm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Feedback Inputs -->
+          <div class="space-y-4">
+            <div>
+              <label class="block mb-1 font-body text-gray-700">Enter Your Name <span class="text-red-600">*</span></label>
+              <input type="text" [(ngModel)]="name" name="name" required class="w-full p-2 border border-gray-300 rounded" />
+              <div *ngIf="feedbackForm.submitted && !name" class="text-red-500 text-sm">Please enter your name</div>
+            </div>
+
+            <div>
+              <label class="block mb-1 font-body text-gray-700">Enter Your Email <span class="text-red-600">*</span></label>
+              <input type="email" [(ngModel)]="email" name="email" required class="w-full p-2 border border-gray-300 rounded" />
+              <div *ngIf="feedbackForm.submitted && !email" class="text-red-500 text-sm">Please enter a valid email</div>
+            </div>
+
+            <div>
+              <label class="block mb-1 font-body text-gray-700">Feedback <span class="text-red-600">*</span></label>
+              <textarea rows="4" [(ngModel)]="message" name="message" maxlength="300" required class="w-full p-2 border border-gray-300 rounded resize-none" style="resize: none;"></textarea>
+              <div *ngIf="feedbackForm.submitted && (!message || wordCount > 100)" class="text-red-500 text-sm">Please enter your feedback (max 100 words)</div>
+              <small class="text-gray-500">{{ wordCount }}/100 words</small>
+            </div>
+
+            <div class="flex space-x-4">
+              <button type="submit" class="bg-teal-600 text-white py-2 px-6 rounded hover:bg-teal-700 transition-all">Submit</button>
+            </div>
+          </div>
+
+
+          <div class="flex items-center justify-center">
+            <img src="/assets/feedback.jpg" alt="Feedback" class="rounded-lg " />
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+    <div *ngIf="submitted" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-semibold mb-4">Feedback Submitted</h3>
+        <p class="mb-6">Thank you for your feedback! We appreciate your input.</p>
+        <button (click)="closeModal()" class="bg-teal-600 text-white py-2 px-6 rounded hover:bg-teal-700 w-full">OK</button>
+      </div>
+    </div>
+  </div>
+</section>

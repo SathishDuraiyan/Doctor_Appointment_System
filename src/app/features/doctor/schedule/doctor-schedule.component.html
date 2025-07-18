@@ -1,0 +1,201 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Schedule Management</h1>
+          <p class="text-gray-600 mt-1">Doctor > My Schedules</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button (click)="previousWeek()" class="p-2 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-chevron-left text-gray-600"></i>
+          </button>
+          <button (click)="nextWeek()" class="p-2 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-chevron-right text-gray-600"></i>
+          </button>
+          <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
+            Today
+          </button>
+          <span class="text-sm text-gray-600">
+            {{ currentWeekStart.toLocaleDateString() }} - {{ (currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000) | date:'shortDate' }}
+          </span>
+
+          <!-- Schedule Stats -->
+          <div class="text-sm text-gray-600">
+            <span class="mr-4">Total Slots: {{ getTotalSlotsForWeek() }}</span>
+            <span>Available: {{ getAvailableSlotsForWeek() }}</span>
+          </div>
+
+          <!-- Utility Buttons -->
+          <div class="flex space-x-2">
+            <button (click)="exportSchedulesToJSON()"
+                    class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                    title="Export schedules to JSON">
+              <i class="fas fa-download"></i>
+            </button>
+            <button (click)="clearAllSchedulesFromLocalStorage()"
+                    class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+                    title="Clear all schedules">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Calendar -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Days Header -->
+      <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+        <div *ngFor="let day of weekDays" class="p-4 text-center">
+          <div class="text-sm font-medium text-gray-500 uppercase">{{ day.dayName }}</div>
+          <div class="text-lg font-semibold text-gray-900 mt-1"
+               [class.bg-teal-600]="day.date === getTodayDate()"
+               [class.text-white]="day.date === getTodayDate()"
+               [class.rounded-full]="day.date === getTodayDate()"
+               [class.w-8]="day.date === getTodayDate()"
+               [class.h-8]="day.date === getTodayDate()"
+               [class.mx-auto]="day.date === getTodayDate()"
+               [class.flex]="day.date === getTodayDate()"
+               [class.items-center]="day.date === getTodayDate()"
+               [class.justify-center]="day.date === getTodayDate()">
+            {{ day.dayNumber }}
+          </div>
+          <div class="text-xs text-gray-400 mt-1">{{ day.date.split('-')[1] }}/{{ day.date.split('-')[2] }}</div>
+        </div>
+      </div>
+
+      <!-- Time Slots -->
+      <div class="grid grid-cols-7 min-h-[500px]">
+        <div *ngFor="let day of weekDays" class="border-r border-gray-200 last:border-r-0">
+          <div class="p-4 space-y-2">
+            <!-- Add Slot Button -->
+            <button (click)="openAddSlotModal(day.date)"
+                    class="w-full bg-teal-600 text-white px-3 py-2 rounded-lg hover:bg-teal-700 transition-colors text-sm">
+              <i class="fas fa-plus mr-2"></i>Add Time Slot
+            </button>
+
+            <!-- Existing Slots -->
+            <div *ngFor="let slot of getSlotsForDate(day.date)"
+                 class="border rounded-lg p-3 text-sm"
+                 [ngClass]="getSlotStatusClass(slot)">
+              <div class="flex items-center justify-between mb-2">
+                <div class="font-medium text-gray-900">
+                  {{ formatTime(slot.startTime) }} - {{ formatTime(slot.endTime) }}
+                </div>
+                <div class="flex space-x-1">
+                  <button (click)="toggleSlotAvailability(slot)"
+                          class="text-blue-600 hover:text-blue-800"
+                          [title]="slot.isAvailable ? 'Disable slot' : 'Enable slot'">
+                    <i class="fas" [ngClass]="slot.isAvailable ? 'fa-eye' : 'fa-eye-slash'"></i>
+                  </button>
+                  <button (click)="deleteSlot(slot.id)"
+                          class="text-red-600 hover:text-red-800"
+                          title="Delete slot">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-600">Max: {{ slot.maxPatients }}</span>
+                <span class="px-2 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="{
+                        'bg-green-100 text-green-800': slot.bookedCount === 0,
+                        'bg-yellow-100 text-yellow-800': slot.bookedCount > 0 && slot.bookedCount < slot.maxPatients,
+                        'bg-red-100 text-red-800': slot.bookedCount >= slot.maxPatients
+                      }">
+                  {{ getSlotStatusText(slot) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- No slots message -->
+            <div *ngIf="getSlotsForDate(day.date).length === 0"
+                 class="text-center text-gray-500 py-8">
+              <i class="fas fa-calendar-times text-2xl mb-2"></i>
+              <p class="text-sm">No slots available</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Slot Modal -->
+  <div *ngIf="showAddSlotModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-900">Add Time Slot</h2>
+          <button (click)="closeAddSlotModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form (ngSubmit)="addSlot()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input type="date"
+                   [(ngModel)]="newSlot.date"
+                   name="date"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                   required>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+              <input type="time"
+                     [(ngModel)]="newSlot.startTime"
+                     name="startTime"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+              <input type="time"
+                     [(ngModel)]="newSlot.endTime"
+                     name="endTime"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     required>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Max Patients</label>
+            <input type="number"
+                   [(ngModel)]="newSlot.maxPatients"
+                   name="maxPatients"
+                   min="1"
+                   max="20"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                   required>
+          </div>
+
+          <div class="flex items-center">
+            <input type="checkbox"
+                   [(ngModel)]="newSlot.isAvailable"
+                   name="isAvailable"
+                   id="isAvailable"
+                   class="mr-2">
+            <label for="isAvailable" class="text-sm text-gray-700">Available for booking</label>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button"
+                    (click)="closeAddSlotModal()"
+                    class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit"
+                    class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">
+              Add Slot
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

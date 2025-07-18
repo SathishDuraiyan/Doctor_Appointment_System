@@ -1,0 +1,71 @@
+<section id="home">
+  <div class="w-full" >
+  <app-navbar></app-navbar>
+
+  <section class="">
+     <app-hospital-slider></app-hospital-slider>
+  </section>
+
+
+  <section id="about" class="pt-24  px-4 md:px-12 bg-teal-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-bold mb-6 text-gray-900 font-title text-center">ABOUT US</h2>
+      <div class="rounded-lg ">
+        <p class="mb-4 text-lg md:text-[16px] font-body text-justify px-8">
+          StreamHawkX Hospital, located in the heart of Coimbatore, was
+          established in the year 2000 by the Tamil Nadu Government Charitable
+          Trust with the noble mission of providing specialized medical care for
+          women and children. Over the years, this esteemed institution has
+          evolved into a multispecialty healthcare center, offering a
+          comprehensive range of medical services under one roof. <br /><br />
+          From its humble beginnings as a dedicated facility for maternal and
+          pediatric care, StreamHawkX Hospital has expanded its expertise across
+          multiple medical disciplines, ensuring high-quality treatment and
+          compassionate healthcare for patients of all ages. The hospital is
+          equipped with state-of-the-art medical technology, modern
+          infrastructure, and a team of highly qualified doctors, surgeons, and
+          healthcare professionals committed to delivering excellence in patient
+          care.
+        </p>
+      </div>
+    </div>
+    <div class="container mx-auto px-4 p-5">
+      <h2 class="text-2xl font-bold mb-8 text-center text-gray-900 font-title">A LEGACY OF TRUST, VALUE AND REPUTATION</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all text-center hover:border-2 border-teal-600">
+          <h3 class="text-3xl text-teal-900 mb-2 font-lin">24+</h3>
+          <h4 class=" text-2xl text-teal-900 mb-2 font-body font-bold">Years of Service</h4>
+          <p class="text-gray-600 text-[18px] font-body">Comprehensive healthcare and medical services provided to the Coimbatore community for over two decades</p>
+        </div>
+        <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all text-center  hover:border-2 border-teal-600">
+          <h3 class="text-3xl text-teal-900 mb-2 font-lin">1+</h3>
+          <h4 class="font-bold text-2xl font-body text-teal-900 mb-3">Visionary</h4>
+          <p class="text-gray-600 text-[18px]">Focused on a mission to make healthcare accessible, affordable, and reliable to everyone</p>
+        </div>
+        <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all text-center hover:border-2 border-teal-600">
+          <h3 class="text-3xl text-teal-900 mb-2 font-lin">32+</h3>
+          <h4 class="font-body text-2xl font-bold text-teal-900 mb-3">Departments</h4>
+          <p class="text-gray-600 text-[18px]">Comprehensive multidisciplinary healthcare with specialists across all major medical fields</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="services" class="py-16">
+  <app-department-card></app-department-card>
+  </section>
+
+  <section class="py-12 bg-[#E5F5F5]" id="feedback">
+    <app-g-feedback></app-g-feedback>
+  </section>
+
+  <button (click)="scrollToTop()" class="cursor-pointer fixed bottom-14 right-8 bg-teal-600 text-white p-3 rounded-full shadow-lg hover:bg-teal-700 transition duration-300 z-50 scroll-top" [class.visible]="isScrollButtonVisible">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
+
+  <app-footer></app-footer>
+</div>
+
+</section>
+

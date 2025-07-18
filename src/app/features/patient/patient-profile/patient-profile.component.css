@@ -1,0 +1,95 @@
+/* Patient Profile Component Styles */
+
+.min-h-screen {
+  min-height: calc(100vh - 4rem);
+}
+
+/* Form validation styles */
+.ng-invalid.ng-touched:not(form) {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.ng-valid.ng-touched:not(form) {
+  border-color: #10b981;
+}
+
+/* Custom button hover effects */
+.btn-primary {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading state */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Section headers */
+h2 {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 2px;
+  background-color: #14b8a6;
+}
+
+/* Form section spacing */
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-1 {
+    grid-template-columns: 1fr;
+  }
+
+  .md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Focus states */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+/* Error message styling */
+.text-red-500 {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Success message styling */
+.text-green-700 {
+  font-weight: 500;
+}

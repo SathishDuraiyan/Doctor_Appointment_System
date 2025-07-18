@@ -1,0 +1,163 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <!-- Main container - centered with max width -->
+  <div class="w-full max-w-6xl  bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div class="flex min-h-[600px]">
+      <!-- Left side - Image -->
+      <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-teal-900 to-teal-700">
+        <!-- Background image with overlay -->
+        <div class="absolute inset-0">
+          <img src="assets/new-bg-2.jpg" alt="Modern Design" class="w-full h-full object-cover opacity-60">
+          <div class="absolute inset-0 bg-gradient-to-br from-teal-900/70 to-teal-900/80"></div>
+        </div>
+
+        <!-- Content overlay -->
+        <div class="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div class="max-w-md">
+            <h1 class="text-4xl font-bold mb-6 leading-tight">
+              Join Our<br>
+              <span class="text-teal-400">Healthcare</span><br>
+              Community
+            </h1>
+            <p class="text-lg text-gray-300 mb-8">
+              Create your patient account and get access to quality healthcare services and management tools.
+            </p>
+            <div class="flex items-center space-x-6 text-sm">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-teal-400 rounded-full mr-2"></div>
+                <span>Quick Registration</span>
+              </div>
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-teal-400 rounded-full mr-2"></div>
+                <span>Secure Platform</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Back button -->
+        <div class="absolute top-6 left-6 z-20">
+          <button (click)="goBack()" class="flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-sm font-medium">Back to Login</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side - Registration Form -->
+      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12">
+        <div class="w-full max-w-md space-y-8">
+          <!-- Header -->
+          <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900">Create Account</h2>
+            <p class="mt-2 text-sm text-gray-600">Patient Registration / Sign Up</p>
+          </div>
+
+          <!-- Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-600">*</span></label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 placeholder-gray-400"
+                [class.border-red-500]="(registerForm.controls['email'].invalid && registerForm.controls['email'].touched) || submitted && registerForm.controls['email'].errors"
+                [class.focus:ring-red-500]="(registerForm.controls['email'].invalid && registerForm.controls['email'].touched) || submitted && registerForm.controls['email'].errors"
+                placeholder="Enter your email address"
+              />
+              <div *ngIf="(registerForm.controls['email'].invalid && registerForm.controls['email'].touched) || (submitted && registerForm.controls['email'].errors)" class="mt-2 text-sm text-red-600">
+                <span *ngIf="registerForm.controls['email'].errors?.['required']">Email is required</span>
+                <span *ngIf="registerForm.controls['email'].errors?.['email']">Please enter a valid email</span>
+              </div>
+            </div>
+
+            <!-- Password with toggle -->
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-600">*</span></label>
+              <div class="relative">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 placeholder-gray-400"
+                  [class.border-red-500]="(registerForm.controls['password'].invalid && registerForm.controls['password'].touched) || submitted && registerForm.controls['password'].errors"
+                  [class.focus:ring-red-500]="(registerForm.controls['password'].invalid && registerForm.controls['password'].touched) || submitted && registerForm.controls['password'].errors"
+                  placeholder="Create a strong password"
+                />
+                <button
+                  type="button"
+                  (click)="togglePassword()"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="(registerForm.controls['password'].invalid && registerForm.controls['password'].touched) || (submitted && registerForm.controls['password'].errors)" class="mt-2 text-sm text-red-600">
+                <span *ngIf="registerForm.controls['password'].errors?.['required']">Password is required</span>
+                <span *ngIf="registerForm.controls['password'].errors?.['minlength']">Password must be at least 8 characters</span>
+              </div>
+              <div class="mt-2 text-xs text-gray-500">
+                <ul class="list-disc pl-5 space-y-1">
+                  <li>Minimum 8 characters</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password <span class="text-red-600">*</span></label>
+              <div class="relative">
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 placeholder-gray-400"
+                  [class.border-red-500]="(registerForm.controls['confirmPassword'].invalid && registerForm.controls['confirmPassword'].touched) || submitted && registerForm.controls['confirmPassword'].errors"
+                  [class.focus:ring-red-500]="(registerForm.controls['confirmPassword'].invalid && registerForm.controls['confirmPassword'].touched) || submitted && registerForm.controls['confirmPassword'].errors"
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  (click)="toggleConfirmPassword()"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="(registerForm.controls['confirmPassword'].invalid && registerForm.controls['confirmPassword'].touched) || (submitted && registerForm.controls['confirmPassword'].errors)" class="mt-2 text-sm text-red-600">
+                <span *ngIf="registerForm.controls['confirmPassword'].errors?.['required']">Please confirm your password</span>
+                <span *ngIf="registerForm.controls['confirmPassword'].errors?.['mismatch']">Passwords do not match</span>
+              </div>
+            </div>
+
+            <!-- Register Button -->
+            <button
+              type="submit"
+              class="w-full cursor-pointer flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <i class="fas fa-user-plus mr-2"></i>
+              Create Account
+            </button>
+
+            <!-- Login Link -->
+            <div class="text-center text-sm text-gray-600">
+              Already have an account?
+              <a routerLink="/login" class="text-teal-600 hover:text-teal-500 font-medium ml-1 transition-colors">
+                Sign in
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+/* Patient Sidebar Styles */
+.sidebar-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-item.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-item.active i {
+  color: #ffffff;
+}
+
+.sidebar-item.active span {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Glassmorphism logout button */
+.logout-btn {
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

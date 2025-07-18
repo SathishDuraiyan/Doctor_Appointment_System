@@ -1,0 +1,109 @@
+/* Profile Setup Specific Styles */
+.form-section {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.required-field::after {
+  content: " *";
+  color: #ef4444;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input:focus + .input-icon,
+.input-group textarea:focus + .input-icon {
+  color: #14b8a6;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.progress-indicator {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #14b8a6, #06b6d4);
+  transition: width 0.3s ease;
+}
+
+.section-header {
+  position: relative;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, #14b8a6, #06b6d4);
+}
+
+.medical-info-note {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #0ea5e9;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(20, 184, 166, 0.2);
+}
+
+.submit-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(20, 184, 166, 0.3);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  transform: none;
+  cursor: not-allowed;
+}

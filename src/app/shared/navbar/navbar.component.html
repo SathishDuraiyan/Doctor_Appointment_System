@@ -1,0 +1,132 @@
+<!-- navbar.component.html -->
+<header class="bg-white shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <!-- Top bar with contact info -->
+
+
+    <div class="flex justify-between items-center py-3 ">
+      <div class="flex items-center">
+        <div class="flex items-center ">
+          <div class="w-12 h-12 bg-gradient-to-br from-teal-600 to-teal-800 rounded-full flex items-center justify-center mr-3">
+            <i class="fas fa-hospital text-white text-xl"></i>
+          </div>
+          <div class="flex flex-col justify-center">
+            <h1 class="text-xl font-bold text-gray-800 font-title">StreamHawkX</h1>
+        <span class="flex items-center font-body text-[12px]">
+          <!-- <i class="fas fa-map-marker-alt text-teal-600 mr-2"></i> -->
+          Healthcare Excellence
+        </span>
+      </div>
+          </div>
+        </div>
+
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-8 text-[15px] ml-30">
+
+        <a routerLink="/home" class="nav-link font-body font-medium text-gray-700 hover:text-teal-600 transition-colors relative">
+          Home
+        </a>
+        <div (click)="navigateTo('about')" class="relative group cursor-pointer">
+          <a class="nav-link font-body font-medium text-gray-700 hover:text-teal-600 transition-colors flex items-center">
+            About Us
+          </a>
+
+        </div>
+        <div class="relative group cursor-pointer">
+          <a (click)="navigateTo('services')" class="nav-link font-body font-medium text-gray-700 hover:text-teal-600 transition-colors flex items-center">
+            Services
+          </a>
+
+        </div>
+        <a href="#" class="nav-link font-body font-medium text-gray-700 hover:text-teal-600 transition-colors">
+          Find a Doctor
+        </a>
+         <a routerLink="/login" class="btn-secondary text-[12px] text-white font-body bg-gradient-to-br bg-teal-700  rounded-xl px-4 py-2 hover:bg-teal-900">
+          <i class="fas fa-user mr-1"></i> Login
+        </a>
+
+
+
+      </nav>
+
+      <!-- CTA Button -->
+
+
+      <div class="hidden lg:flex items-center space-x-4">
+        <div class="hidden lg:flex items-center space-x-4 bg-teal-700 hover:bg-teal-900  rounded-xl">
+        <a href="#" class="btn-primary text-[12px]  text-white font-body  px-4 py-2 ">
+          <i class="fas fa-phone mr-2"></i>
+          Emergency: 999-999-1234
+        </a>
+      </div>
+        <a href="#" class="btn-primary text-[12px]  text-white font-body bg-red-700 rounded-xl px-4 py-2 hover:bg-red-900">
+          <i class="fas fa-calendar-alt mr-1"></i>
+          Book Appointment
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-button" class="lg:hidden text-gray-700 hover:text-teal-600 transition-colors" (click)="toggleMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="lg:hidden" [class.hidden]="!isMobileMenuOpen">
+      <div class="py-4 border-t border-gray-200">
+        <div class="flex flex-col space-y-4">
+          <a routerLink="/home" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">Home</a>
+          <a href="#" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">About Us</a>
+          <a href="#" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">Services</a>
+          <a href="#" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">Doctors</a>
+          <a href="#" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">Contact</a>
+          <a routerLink="/login" class="font-body text-gray-700 hover:text-teal-600 transition-colors py-2">Login</a>
+          <div class="pt-4 border-t border-gray-200">
+            <a href="#" class="btn-primary w-full justify-center text-sm">
+              <i class="fas fa-calendar-alt mr-1"></i>
+              Book Appointment
+            </a>
+          </div>
+          <div class="pt-2">
+            <a href="tel:9999991234" class="btn-secondary w-full justify-center text-sm">
+              <i class="fas fa-phone-alt mr-1"></i>
+              Emergency Call
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0f766e, #14b8a6);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+.group:hover .group-hover\:visible {
+  visibility: visible;
+}
+</style>

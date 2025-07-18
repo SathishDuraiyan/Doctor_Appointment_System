@@ -1,0 +1,305 @@
+/* Import Tailwind if needed */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Julius+Sans+One&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Oswald:wght@200..700&display=swap');
+
+
+@import "tailwindcss";
+
+@layer utilities {
+    .font-title {
+        font-family: 'Julius Sans One', sans-serif;
+    }
+    .font-body {
+        font-family: 'Instrument Sans', sans-serif;
+    }
+    .font-banner {
+        font-family: 'Oswald', sans-serif;
+    }
+    .font-lin {
+        font-family: 'Literata', serif;
+    }
+    .text-gradient-gold {
+        background: linear-gradient(90deg, #ffe864, #745315);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+    /* Smooth scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Style for the scroll-to-top button when scrolled */
+.scroll-top {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+}
+}
+
+
+/* Slider Container */
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background: #f3f4f6;
+}
+
+/* Slides Wrapper */
+.slides-wrapper {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Individual Slide */
+.slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.slide:hover .slide-image {
+  transform: scale(1.02);
+}
+
+/* Slide Overlay */
+.slide-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Slide Content */
+.slide-content {
+  text-align: center;
+  color: white;
+  max-width: 600px;
+  z-index: 2;
+}
+
+.slide-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.slide-description {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  opacity: 0.95;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.slide-button {
+  background:transparent;
+  color: rgb(255, 255, 255);
+  padding: 1rem 2rem;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slide-button:hover {
+  background: transparent;
+  border-radius: 2px solid rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+
+}
+
+/* Navigation Buttons */
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nav-button-left {
+  left: 1rem;
+}
+
+.nav-button-right {
+  right: 1rem;
+}
+
+.nav-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Slide Indicators */
+.indicators {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 10;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator:hover {
+  background: rgba(255, 255, 255, 0.75);
+  transform: scale(1.2);
+}
+
+.indicator.active {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Slide Counter */
+.slide-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  z-index: 10;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  animation: pulse 2s infinite;
+}
+
+.loading-text {
+  color: #6b7280;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .slider-container {
+    height: 400px;
+  }
+
+  .slide-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .slide-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .slide-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .nav-button {
+    padding: 0.75rem;
+  }
+
+  .nav-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider-container {
+    height: 350px;
+    border-radius: 8px;
+  }
+
+  .slide-content {
+    padding: 1rem;
+  }
+
+  .slide-title {
+    font-size: 1.75rem;
+  }
+
+  .slide-description {
+    font-size: 0.9rem;
+  }
+
+  .nav-button-left {
+    left: 0.5rem;
+  }
+
+  .nav-button-right {
+    right: 0.5rem;
+  }
+}

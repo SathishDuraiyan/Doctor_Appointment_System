@@ -1,0 +1,61 @@
+/* report-management.component.css */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition-colors {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+/* Hover effects */
+.hover\:bg-teal-800:hover {
+  background-color: #115e59;
+}
+
+.hover\:bg-teal-900:hover {
+  background-color: #134e4a;
+}
+
+.hover\:text-white:hover {
+  color: #ffffff;
+}
+
+/* Tab button styling */
+.tab-button {
+  border: 1px solid #d1d5db;
+  border-right: none;
+}
+
+.tab-button:last-child {
+  border-right: 1px solid #d1d5db;
+}
+
+/* Focus styles */
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .md\:mb-0 {
+    margin-bottom: 0;
+  }
+}

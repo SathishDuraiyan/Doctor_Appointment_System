@@ -1,0 +1,149 @@
+/* Patient Appointments Component Styles */
+
+.appointment-card {
+  transition: all 0.3s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.status-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.status-badge:hover::before {
+  transform: translateX(100%);
+}
+
+.action-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.appointment-detail-icon {
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Loading Animation */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0d9488;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .appointment-card {
+    margin-bottom: 1rem;
+  }
+
+  .appointment-actions {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .appointment-actions button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Status Colors */
+.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-confirmed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-completed {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-no-show {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Glassmorphism Effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effects */
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(13, 148, 136, 0.4);
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}

@@ -1,0 +1,49 @@
+<div class="slider-container">
+  <!-- Slides Container -->
+  <div class="slides-wrapper"
+       [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
+
+    <!-- Dynamic Slides -->
+    <div *ngFor="let slide of slides" class="slide">
+      <img [src]="slide.image"
+           [alt]="slide.alt"
+           class="slide-image">
+      <div class="slide-overlay">
+        <div class="slide-content">
+          <h2 class="slide-title font-body">{{ slide.title }}</h2>
+          <p class="slide-description font-body">{{ slide.description }}</p>
+          <button class="slide-button font-body">
+            {{ slide.buttonText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <button (click)="prevSlide()" class="nav-button nav-button-left">
+    <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <button (click)="nextSlide()" class="nav-button nav-button-right">
+    <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <!-- Slide Indicators -->
+  <div class="indicators">
+    <button *ngFor="let slide of slides; let i = index"
+            (click)="goToSlide(i)"
+            class="indicator"
+            [class.active]="currentSlide === i">
+    </button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-text">Loading slides...</div>
+  </div>
+</div>

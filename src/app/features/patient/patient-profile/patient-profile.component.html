@@ -1,0 +1,605 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <h1 class="text-2xl font-bold text-gray-900">Patient Profile</h1>
+          <p class="text-gray-600 mt-1">Manage your personal and medical information</p>
+
+          <!-- Profile Completion -->
+          <div *ngIf="profileData" class="mt-4">
+            <div class="flex items-center space-x-3">
+              <span class="text-sm font-medium text-gray-700">Profile Completion:</span>
+              <div class="flex items-center space-x-2">
+                <div class="w-24 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="h-2 rounded-full transition-all duration-300"
+                    [ngClass]="profileCompletionPercentage < 50 ? 'bg-red-500' : profileCompletionPercentage < 80 ? 'bg-yellow-500' : 'bg-green-500'"
+                    [style.width.%]="profileCompletionPercentage">
+                  </div>
+                </div>
+                <span
+                  class="text-sm font-semibold"
+                  [ngClass]="getCompletionColor(profileCompletionPercentage)">
+                  {{ profileCompletionPercentage }}%
+                </span>
+              </div>
+            </div>
+
+            <!-- Completion Message -->
+            <div class="mt-2">
+              <span
+                *ngIf="profileCompletionPercentage < 50"
+                class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full">
+                <i class="fas fa-exclamation-triangle mr-1"></i>
+                Please complete your profile for better healthcare service
+              </span>
+              <span
+                *ngIf="profileCompletionPercentage >= 50 && profileCompletionPercentage < 80"
+                class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                <i class="fas fa-info-circle mr-1"></i>
+                Good progress! Consider adding more details
+              </span>
+              <span
+                *ngIf="profileCompletionPercentage >= 80"
+                class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                <i class="fas fa-check-circle mr-1"></i>
+                Excellent! Your profile is well-completed
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <!-- Edit/Cancel Button -->
+          <button
+            *ngIf="!isEditMode && profileData"
+            (click)="enterEditMode()"
+            class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
+            <i class="fas fa-edit mr-2"></i>Edit Profile
+          </button>
+
+          <button
+            *ngIf="isEditMode"
+            (click)="cancelEdit()"
+            type="button"
+            class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+            <i class="fas fa-times mr-2"></i>Cancel
+          </button>
+
+          <button (click)="goBack()"
+                  class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+      <div class="flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        {{ successMessage }}
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+      <div class="flex items-center">
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        {{ errorMessage }}
+      </div>
+    </div>
+
+    <!-- Profile View Mode -->
+    <div *ngIf="!isEditMode && profileData" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- Personal Information View -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-user text-teal-600 mr-2"></i>
+            Personal Information
+          </h3>
+          <div class="space-y-3">
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Full Name:</span>
+              <span class="font-medium">{{ (profileData.fullName || profileData.full_name || profileData.name) || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Email:</span>
+              <span class="font-medium">{{ profileData.email || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Phone:</span>
+              <span class="font-medium">{{ (profileData.phone || profileData.contact_number) || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Date of Birth:</span>
+              <span class="font-medium">{{ profileData.dateOfBirth ? (profileData.dateOfBirth | date:'mediumDate') : 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Gender:</span>
+              <span class="font-medium">{{ profileData.gender || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Blood Type:</span>
+              <span class="font-medium">{{ profileData.bloodType || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Occupation:</span>
+              <span class="font-medium">{{ profileData.occupation || 'Not provided' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact & Address View -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-map-marker-alt text-teal-600 mr-2"></i>
+            Address & Emergency Contact
+          </h3>
+          <div class="space-y-3">
+            <div class="border-b pb-2">
+              <span class="text-gray-600 block">Address:</span>
+              <span class="font-medium">
+                {{ profileData.address || 'Not provided' }}<br>
+                {{ profileData.city }}, {{ profileData.state }} {{ profileData.zipCode }}<br>
+                {{ profileData.country }}
+              </span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Emergency Contact:</span>
+              <span class="font-medium">{{ profileData.emergencyContactName || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Contact Phone:</span>
+              <span class="font-medium">{{ profileData.emergencyContactPhone || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Relationship:</span>
+              <span class="font-medium">{{ profileData.emergencyContactRelation || 'Not provided' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Information View -->
+        <div class="lg:col-span-2">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-heartbeat text-teal-600 mr-2"></i>
+            Medical Information
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-3">
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Allergies:</span>
+                <span class="font-medium">{{ profileData.allergies || 'None reported' }}</span>
+              </div>
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Current Medications:</span>
+                <span class="font-medium">{{ profileData.currentMedications || 'None reported' }}</span>
+              </div>
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Chronic Conditions:</span>
+                <span class="font-medium">{{ profileData.chronicConditions || 'None reported' }}</span>
+              </div>
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Previous Surgeries:</span>
+                <span class="font-medium">{{ profileData.previousSurgeries || 'None reported' }}</span>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Medical History:</span>
+                <span class="font-medium">{{ profileData.medicalHistory || 'None reported' }}</span>
+              </div>
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Family Medical History:</span>
+                <span class="font-medium">{{ profileData.familyMedicalHistory || 'None reported' }}</span>
+              </div>
+              <div class="border-b pb-2">
+                <span class="text-gray-600 block">Primary Care Physician:</span>
+                <span class="font-medium">{{ profileData.primaryCarePhysician || 'Not provided' }}</span>
+              </div>
+              <div class="flex justify-between border-b pb-2">
+                <span class="text-gray-600">Preferred Language:</span>
+                <span class="font-medium">{{ profileData.preferredLanguage || 'English' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lifestyle Information View -->
+        <div class="lg:col-span-2">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-running text-teal-600 mr-2"></i>
+            Lifestyle Information
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Smoking Status:</span>
+              <span class="font-medium">{{ profileData.smokingStatus || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Alcohol Consumption:</span>
+              <span class="font-medium">{{ profileData.alcoholConsumption || 'Not provided' }}</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span class="text-gray-600">Exercise Frequency:</span>
+              <span class="font-medium">{{ profileData.exerciseFrequency || 'Not provided' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Edit Mode / New Profile -->
+    <div *ngIf="isEditMode" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+        <!-- Personal Information -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Full Name <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="fullName"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Enter your full name">
+              <div *ngIf="getFieldError('fullName')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('fullName') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-600">*</span></label>
+              <input type="email"
+                     formControlName="email"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                     placeholder="Enter your email"
+                     readonly>
+              <div class="text-gray-500 text-sm mt-1">Email cannot be changed</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Phone <span class="text-red-600">*</span></label>
+              <input type="tel"
+                     formControlName="phone"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="+1234567890">
+              <div *ngIf="getFieldError('phone')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('phone') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth <span class="text-red-600">*</span></label>
+              <input type="date"
+                     formControlName="dateOfBirth"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+              <div *ngIf="getFieldError('dateOfBirth')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('dateOfBirth') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gender <span class="text-red-600">*</span></label>
+              <select formControlName="gender"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              <div *ngIf="getFieldError('gender')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('gender') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Blood Type <span class="text-red-600">*</span></label>
+              <select formControlName="bloodType"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Blood Type</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address Information -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Address Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Address <span class="text-red-600">*</span></label>
+              <textarea formControlName="address"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="Enter your full address"></textarea>
+              <div *ngIf="getFieldError('address')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('address') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">City <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="city"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Enter your city">
+              <div *ngIf="getFieldError('city')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('city') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">State <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="state"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Enter your state">
+              <div *ngIf="getFieldError('state')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('state') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">ZIP Code <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="zipCode"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Enter ZIP code">
+              <div *ngIf="getFieldError('zipCode')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('zipCode') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Country <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="country"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Enter your country">
+              <div *ngIf="getFieldError('country')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('country') }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Emergency Contact</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contact Name <span class="text-red-600">*</span></label>
+              <input type="text"
+                     formControlName="emergencyContactName"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Emergency contact name">
+              <div *ngIf="getFieldError('emergencyContactName')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('emergencyContactName') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contact Phone <span class="text-red-600">*</span></label>
+              <input type="tel"
+                     formControlName="emergencyContactPhone"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="+1234567890">
+              <div *ngIf="getFieldError('emergencyContactPhone')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('emergencyContactPhone') }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Relationship <span class="text-red-600">*</span></label>
+              <select formControlName="emergencyContactRelation"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Relationship</option>
+                <option value="spouse">Spouse</option>
+                <option value="parent">Parent</option>
+                <option value="sibling">Sibling</option>
+                <option value="child">Child</option>
+                <option value="friend">Friend</option>
+                <option value="other">Other</option>
+              </select>
+              <div *ngIf="getFieldError('emergencyContactRelation')" class="text-red-500 text-sm mt-1">
+                {{ getFieldError('emergencyContactRelation') }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Medical Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Allergies</label>
+              <textarea formControlName="allergies"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="List any allergies (e.g., medications, foods, etc.)"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Current Medications</label>
+              <textarea formControlName="currentMedications"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="List current medications and dosages"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Medical History</label>
+              <textarea formControlName="medicalHistory"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="Previous medical conditions, treatments, etc."></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Chronic Conditions</label>
+              <textarea formControlName="chronicConditions"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="Any ongoing chronic conditions"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Previous Surgeries</label>
+              <textarea formControlName="previousSurgeries"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="List any previous surgeries and dates"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Family Medical History</label>
+              <textarea formControlName="familyMedicalHistory"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="Family history of medical conditions"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Additional Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Primary Care Physician</label>
+              <input type="text"
+                     formControlName="primaryCarePhysician"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Name of your primary care doctor">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Language</label>
+              <select formControlName="preferredLanguage"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Occupation</label>
+              <input type="text"
+                     formControlName="occupation"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                     placeholder="Your occupation">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Smoking Status</label>
+              <select formControlName="smokingStatus"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Status</option>
+                <option value="never">Never Smoked</option>
+                <option value="former">Former Smoker</option>
+                <option value="current">Current Smoker</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Alcohol Consumption</label>
+              <select formControlName="alcoholConsumption"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Frequency</option>
+                <option value="never">Never</option>
+                <option value="rarely">Rarely</option>
+                <option value="occasionally">Occasionally</option>
+                <option value="regularly">Regularly</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Exercise Frequency</label>
+              <select formControlName="exerciseFrequency"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                <option value="">Select Frequency</option>
+                <option value="never">Never</option>
+                <option value="rarely">Rarely</option>
+                <option value="weekly">1-2 times per week</option>
+                <option value="regular">3-4 times per week</option>
+                <option value="daily">Daily</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div class="flex items-center">
+            <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+            <span class="text-red-700">{{ errorMessage }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="successMessage" class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div class="flex items-center">
+            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+            <span class="text-green-700">{{ successMessage }}</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+          <button type="button"
+                  (click)="cancelEdit()"
+                  class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+            <i class="fas fa-times mr-2"></i>Cancel
+          </button>
+
+          <button type="submit"
+                  [disabled]="loading || profileForm.invalid"
+                  class="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="loading">
+              <i class="fas fa-spinner fa-spin mr-2"></i>Saving...
+            </span>
+            <span *ngIf="!loading">
+              <i class="fas fa-save mr-2"></i>Save Profile
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Empty State for New Users -->
+    <div *ngIf="!profileData && !isEditMode" class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+      <div class="text-gray-400 mb-4">
+        <i class="fas fa-user-plus text-6xl"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Complete Your Profile</h3>
+      <p class="text-gray-600 mb-6">Let's set up your profile to provide you with better healthcare services.</p>
+      <button (click)="enterEditMode()"
+              class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors">
+        <i class="fas fa-edit mr-2"></i>Create Profile
+      </button>
+    </div>
+  </div>
+</div>

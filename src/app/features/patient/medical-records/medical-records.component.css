@@ -1,0 +1,111 @@
+/* Medical Records Component Styles */
+.medical-record-card {
+  transition: all 0.3s ease;
+}
+
+.medical-record-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.record-header {
+  background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+}
+
+.action-button {
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.stats-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .medical-record-card {
+    margin: 0 1rem;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom scrollbar for notes */
+.notes-container {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.notes-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notes-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.notes-container::-webkit-scrollbar-thumb {
+  background: #14b8a6;
+  border-radius: 10px;
+}
+
+.notes-container::-webkit-scrollbar-thumb:hover {
+  background: #0f766e;
+}
+
+/* Animation for cards */
+.medical-record-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status badge styles */
+.status-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Doctor avatar styles */
+.doctor-avatar {
+  background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}

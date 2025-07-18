@@ -1,0 +1,648 @@
+<!-- doctor-management.component.html -->
+
+<!-- Toast Notification -->
+<div *ngIf="showToast" class="fixed top-4 right-4 z-50">
+  <div class="bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center font-body">
+    <span>{{toastMessage}}</span>
+    <button (click)="showToast = false" class="ml-4">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Confirm Delete</h2>
+        <button (click)="showDeleteModal = false" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p class="mb-6">Are you sure you want to delete Dr. {{doctorToDelete?.full_name}}?</p>
+      <div class="flex justify-end gap-3">
+        <button (click)="showDeleteModal = false" class="px-4 py-2 border border-gray-300 rounded-md">
+          Cancel
+        </button>
+        <button (click)="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-md">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div *ngIf="showViewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Doctor Profile</h2>
+        <button (click)="showViewModal = false" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Left Column -->
+        <div class="md:col-span-1 flex flex-col items-center">
+          <img [src]="viewingDoctor.avatar" class="w-32 h-32 rounded-full object-cover border-4 border-teal-100 mb-4">
+          <h3 class="text-xl font-semibold">{{viewingDoctor.full_name}}</h3>
+          <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm mt-2">
+            {{viewingDoctor.department}}
+          </span>
+
+          <div class="mt-6 w-full">
+            <h4 class="font-medium text-gray-700 mb-2">Contact</h4>
+            <p class="text-sm text-gray-600 mb-1"><i class="fas fa-envelope mr-2"></i> {{viewingDoctor.email}}</p>
+            <p class="text-sm text-gray-600"><i class="fas fa-phone mr-2"></i> {{viewingDoctor.contact_number}}</p>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="md:col-span-2">
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-2">Professional Information</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-500">Schedule</p>
+                <p class="text-gray-800">{{viewingDoctor.schedule}}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Available Slots</p>
+                <p class="text-gray-800">{{viewingDoctor.availableSlots}}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Experience</p>
+                <p class="text-gray-800">{{viewingDoctor.experience}} years</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Licence Key</p>
+                <p class="text-gray-800 font-mono text-sm">{{viewingDoctor.licence_key}}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-2">Qualifications</h4>
+            <p class="text-gray-800 whitespace-pre-line">{{viewingDoctor.qualification}}</p>
+          </div>
+
+          <div class="flex gap-3 justify-end">
+            <button (click)="showEditForm(viewingDoctor); showViewModal = false"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md">
+              <i class="fas fa-edit mr-2"></i> Edit
+            </button>
+            <button (click)="initiateDelete(viewingDoctor); showViewModal = false"
+                    class="px-4 py-2 bg-red-600 text-white rounded-md">
+              <i class="fas fa-trash-alt mr-2"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor Form Modal -->
+<div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">{{isEditing ? 'Edit' : 'Add'}} Doctor</h2>
+        <button (click)="resetForm()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+        <p class="text-sm text-blue-700">
+          <i class="fas fa-info-circle mr-2"></i>
+          Fields marked with <span class="text-red-500">*</span> are required. The form will be enabled for submission only when all required fields are properly filled.
+        </p>
+      </div>
+
+      <form #doctorForm="ngForm" (ngSubmit)="submitForm()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Personal Info -->
+        <div class="md:col-span-2 flex gap-4">
+          <div class="flex-shrink-0 flex flex-col items-center">
+            <img [src]="currentDoctor.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg'" class="w-20 h-20 rounded-full object-cover border-2 border-gray-200 mb-2">
+            <label class="block text-xs text-gray-600 mb-1">Profile Image</label>
+            <label class="inline-block cursor-pointer px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition mb-1 mt-1">
+              <i class="fas fa-upload mr-1"></i> Choose Image
+              <input type="file" accept="image/*" (change)="onAvatarChange($event)" class="hidden" />
+            </label>
+            <span *ngIf="avatarFileName" class="text-xs text-gray-500 mt-1">{{avatarFileName}}</span>
+          </div>
+          <div class="flex-1">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-600">*</span></label>
+              <input type="text" [(ngModel)]="currentDoctor.full_name" name="full_name" required
+                     (blur)="validateName()"
+                     title="Doctor's Full Name" placeholder="Enter doctor's full name"
+                     class="w-full px-3 py-2 border rounded-md font-body"
+                     [class.cursor-not-allowed]="isEditing"
+                     [class.border-gray-300]="!nameError"
+                     [class.border-red-500]="nameError"
+                     [readonly]="isEditing" >
+              <p *ngIf="nameError" class="text-red-500 text-xs mt-1">{{nameError}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-600">*</span></label>
+          <input type="email" [(ngModel)]="currentDoctor.email" name="email" required
+                 (blur)="checkEmailExists()"
+                 (input)="checkEmailExists()"
+                 title="Doctor's Email Address" placeholder="Enter email address"
+                 class="w-full px-3 py-2 border rounded-md font-body"
+                 [class.cursor-not-allowed]="isEditing"
+                 [class.border-gray-300]="!emailError"
+                 [class.border-red-500]="emailError"
+                 [class.border-green-500]="currentDoctor.email && !emailError && isValidEmail(currentDoctor.email)"
+                 [readonly]="isEditing">
+          <p *ngIf="emailError" class="text-red-500 text-xs mt-1">{{emailError}}</p>
+          <p *ngIf="currentDoctor.email && !emailError && isValidEmail(currentDoctor.email)" class="text-green-500 text-xs mt-1">
+            <i class="fas fa-check-circle mr-1"></i> Email is valid and available
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone <span class="text-red-600">*</span></label>
+          <input type="tel" [(ngModel)]="currentDoctor.contact_number" name="contact_number" required
+                 pattern="[6-9]{1}[0-9]{9}"
+                 maxlength="10" minlength="10"
+                 (blur)="checkPhoneExists(); validatePhoneNumber()"
+                 (input)="checkPhoneExists(); validatePhoneNumber()"
+                 title="Doctor's Phone Number (10 digits, starts with 6-9)" placeholder="Enter phone number"
+                 class="w-full px-3 py-2 border rounded-md font-body"
+                 [class.border-gray-300]="!phoneError"
+                 [class.border-red-500]="phoneError"
+                 [class.border-green-500]="currentDoctor.contact_number && !phoneError">
+          <p *ngIf="phoneError" class="text-red-500 text-xs mt-1">{{phoneError}}</p>
+          <p *ngIf="currentDoctor.contact_number && !phoneError" class="text-green-500 text-xs mt-1">
+            <i class="fas fa-check-circle mr-1"></i> Phone number is available
+          </p>
+        </div>
+
+        <!-- Password Fields -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-600">*</span></label>
+          <div class="flex gap-2">
+            <input type="password" [(ngModel)]="currentDoctor.password" name="password" required
+                   (blur)="validatePassword()"
+                   (input)="validatePassword()"
+                   title="Set a password for the doctor"
+                   placeholder="Enter password"
+                   class="flex-1 px-3 py-2 border rounded-md font-body"
+                   [class.border-gray-300]="!passwordError"
+                   [class.border-red-500]="passwordError">
+            <button type="button" (click)="autoGeneratePassword()"
+                    class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 whitespace-nowrap">
+              <i class="fas fa-magic mr-1"></i> Generate
+            </button>
+          </div>
+          <p *ngIf="passwordError" class="text-red-500 text-xs mt-1">{{passwordError}}</p>
+          <p *ngIf="currentDoctor.password && !passwordError" class="text-green-500 text-xs mt-1">
+            <i class="fas fa-check-circle mr-1"></i> Password is strong and secure
+          </p>
+        </div>
+
+        <!-- Add this after the password field if you want password confirmation -->
+        <div class="md:col-span-2" *ngIf="!isEditing">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-600">*</span></label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required
+                 (blur)="validateConfirmPassword()"
+                 (input)="validateConfirmPassword()"
+                 title="Confirm the password"
+                 placeholder="Confirm password"
+                 class="w-full px-3 py-2 border rounded-md font-body"
+                 [class.border-gray-300]="!confirmPasswordError"
+                 [class.border-red-500]="confirmPasswordError">
+          <p *ngIf="confirmPasswordError" class="text-red-500 text-xs mt-1">{{confirmPasswordError}}</p>
+        </div>
+
+        <!-- Professional Info -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Department <span class="text-red-600">*</span></label>
+          <select [(ngModel)]="currentDoctor.department" name="department" required
+                  (change)="validateDepartment()"
+                  title="Select Department"
+                  class="w-full px-3 py-2 border rounded-md font-body"
+                  [class.border-gray-300]="!departmentError"
+                  [class.border-red-500]="departmentError">
+            <option value="">Select Department</option>
+            <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+          </select>
+          <p *ngIf="departmentError" class="text-red-500 text-xs mt-1">{{departmentError}}</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">General Schedule <span class="text-red-600">*</span></label>
+          <input type="text" [(ngModel)]="currentDoctor.schedule" name="schedule"
+                 title="Doctor's Schedule" placeholder="e.g., 9:00 AM - 5:00 PM"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md font-body">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Available Slots <span class='text-gray-500 '>(max slots) </span> <span class="text-red-600">*</span> </label>
+          <input type="text" [(ngModel)]="currentDoctor.availableSlots" name="availableSlots"
+                 title="Doctor's Schedule" placeholder="e.g., 8"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md font-body">
+        </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-600">*</span></label>
+        <select [(ngModel)]="currentDoctor.gender" name="gender" required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-body"
+                [class.select-blocked\:cursor-not-allowed]="isEditing"
+                [disabled]="isEditing">
+          <option value="">Select Gender</option>
+          <option *ngFor="let g of genderOptions" [value]="g">{{g}}</option>
+        </select>
+      </div>
+
+<div class="md:col-span-2">
+  <label class="block text-sm font-medium text-gray-700 mb-1">Languages Spoken <span class="text-red-600">*</span></label>
+  <div class="relative">
+    <div class="flex flex-wrap gap-2 border border-gray-300 px-3 py-2 rounded-md bg-white min-h-[42px] font-body">
+      <span *ngFor="let lang of currentDoctor.language" class="bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-xs flex items-center">
+        {{lang}}
+        <button type="button" (click)="removeLanguage(lang)" class="ml-1 text-teal-600 hover:text-red-600">&times;</button>
+      </span>
+      <select (change)="addLanguage($event)" required class="border-none outline-none bg-transparent flex-1 min-w-[120px] font-body"
+              [class.select-blocked\:cursor-not-allowed]="isEditing">
+        <option value="" disabled selected>Add language...</option>
+        <option *ngFor="let lang of language" [value]="lang" [disabled]="currentDoctor.language?.includes(lang)">
+          {{lang}}
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Qualifications <span class="text-red-600">*</span></label>
+          <input [(ngModel)]="currentDoctor.qualification" name="qualification" rows="2"
+                    title="Doctor's Qualifications" placeholder="Enter qualifications and certifications"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md font-body" required=""/>
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Joining Year <span class="text-red-600">*</span></label>
+              <select [(ngModel)]="currentDoctor.joiningYear" name="joiningYear" required
+                      (change)="updateExperience()"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md font-body"
+                      [class.select-blocked\:cursor-not-allowed]="isEditing"
+                      [disabled]="isEditing">
+                <option value="">Year</option>
+                <option *ngFor="let year of joiningYears" [value]="year">{{year}}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Joining Month <span class="text-red-600">*</span></label>
+              <select [(ngModel)]="currentDoctor.joiningMonth" name="joiningMonth" required
+                      (change)="updateExperience()"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md font-body"
+                      [class.select-blocked\:cursor-not-allowed]="isEditing"
+                      [disabled]="isEditing">
+                <option value="">Month</option>
+                <option *ngFor="let month of joiningMonths" [value]="month.value">{{month.name}}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Experience (Years)</label>
+              <input type="number" [value]="currentDoctor.experience" name="experience" readonly
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 font-body cursor-not-allowed">
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Licence Key</label>
+          <div class="flex gap-2">
+            <input type="text" [(ngModel)]="currentDoctor.licence_key" name="licence_key"
+                   title="Medical Licence Key" placeholder="Auto-generated licence key"
+                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md font-body"
+                   [class.cursor-not-allowed]="true"
+                   [readonly]="true">
+            <button type="button" (click)="generateAndAssignLicenceKey()"
+                    class="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 whitespace-nowrap">
+              <i class="fas fa-refresh mr-1"></i> Generate
+            </button>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">
+            <i class="fas fa-info-circle mr-1"></i>
+            Licence key will be auto-generated when creating a new doctor
+          </p>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="md:col-span-2 flex justify-end gap-3 pt-4">
+          <button type="button" (click)="resetForm()"
+                  class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit"
+                  [disabled]="!isFormValid"
+                  [class.opacity-50]="!isFormValid"
+                  [class.cursor-not-allowed]="!isFormValid"
+                  class="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:hover:bg-teal-600 transition-colors">
+            {{isEditing ? 'Update' : 'Save'}} Doctor
+          </button>
+        </div>
+      </form>
+      <style>
+        /* Custom class to show not-allowed cursor for blocked/disabled selects */
+        .select-blocked\:cursor-not-allowed:disabled,
+        .select-blocked\:cursor-not-allowed[disabled],
+        .cursor-not-allowed {
+          cursor: not-allowed !important;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+
+<!-- Credentials Modal - Shows new doctor login credentials -->
+<div *ngIf="showCredentialsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-green-600">
+          <i class="fas fa-check-circle mr-2"></i>Doctor Account Created!
+        </h2>
+        <button (click)="closeCredentialsModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="mb-6">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <p class="text-green-800 text-sm">
+            <i class="fas fa-info-circle mr-2"></i>
+            A new user account has been created for Dr. {{newDoctorCredentials?.full_name}}.
+            Please share these login credentials with the doctor.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="bg-gray-50 border rounded-lg p-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Login Email:</label>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-900 font-mono bg-white px-2 py-1 rounded border">{{newDoctorCredentials?.email}}</span>
+              <button (click)="copyToClipboard(newDoctorCredentials?.email)"
+                      class="ml-2 text-blue-600 hover:text-blue-800 p-1">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 border rounded-lg p-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Temporary Password:</label>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-900 font-mono bg-white px-2 py-1 rounded border">{{newDoctorCredentials?.password}}</span>
+              <button (click)="copyToClipboard(newDoctorCredentials?.password)"
+                      class="ml-2 text-blue-600 hover:text-blue-800 p-1">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p class="text-yellow-800 text-sm">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Important:</strong> The doctor will be required to change this password on their first login for security purposes.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button (click)="copyToClipboard(newDoctorCredentials?.email + '\\n' + newDoctorCredentials?.password)"
+                class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+          <i class="fas fa-copy mr-2"></i>Copy Both
+        </button>
+        <button (click)="closeCredentialsModal()"
+                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+          <i class="fas fa-check mr-2"></i>Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Confirmation Modal -->
+<div *ngIf="showUpdateConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-blue-600">
+          <i class="fas fa-edit mr-2"></i>Confirm Update
+        </h2>
+        <button (click)="cancelUpdate()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <p class="mb-3">Are you sure you want to update Dr. {{currentDoctor.full_name}}'s profile?</p>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p class="text-sm text-blue-700">
+            <i class="fas fa-info-circle mr-2"></i>
+            All changes will be saved and the doctor's information will be updated in the system.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button (click)="cancelUpdate()" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+          Cancel
+        </button>
+        <button (click)="confirmUpdate()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          <i class="fas fa-check mr-2"></i>Yes, Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div *ngIf="showCancelConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 font-body">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-orange-600">
+          <i class="fas fa-exclamation-triangle mr-2"></i>Confirm Cancel
+        </h2>
+        <button (click)="cancelCancel()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <p class="mb-3">Are you sure you want to cancel editing Dr. {{currentDoctor.full_name}}'s profile?</p>
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+          <p class="text-sm text-yellow-700">
+            <i class="fas fa-info-circle mr-2"></i>
+            All unsaved changes will be lost and you'll return to the doctor list.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button (click)="cancelCancel()" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+          Continue Editing
+        </button>
+        <button (click)="confirmCancel()" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+          <i class="fas fa-times mr-2"></i>Yes, Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-gray-50 flex h-screen font-body">
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Navigation -->
+    <div class="bg-white p-4 flex justify-between items-center shadow-sm">
+      <div class="flex items-center space-x-4">
+        <!-- <button type="button" class="bg-teal-800 text-white px-3 py-1 rounded flex items-center text-sm" (click)="goBack()">
+          <i class="fas fa-arrow-left mr-1"></i> Back
+        </button> -->
+        <div class="flex">
+          <input type="text" [(ngModel)]="searchTerm" (input)="filterDoctors()"
+                 placeholder="Search doctor name or ID"
+                 class="border border-gray-300 rounded-l py-1 px-4 w-64 focus:outline-none focus:ring-1 focus:ring-teal-500 font-body">
+          <button class="bg-teal-800 text-white px-4 py-1 rounded-r border border-teal-800" (click)="filterDoctors()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <!-- <button (click)="resetToSampleData()" class="bg-red-600 text-white px-2 py-1 rounded text-xs">
+          Reset Data
+        </button> -->
+        <span class="text-sm text-gray-600">Today's Date</span>
+        <span class="text-sm font-semibold">{{ currentDate }}</span>
+        <div class="w-6 h-6 flex items-center justify-center">
+          <i class="fas fa-calendar-alt text-gray-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Management Content -->
+    <div class="flex-1  p-4">
+      <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold text-gray-800">Doctor Management</h1>
+          <div class="flex space-x-3">
+            <div class="relative">
+              <select [(ngModel)]="selectedDepartment" (change)="filterDoctors()"
+                      title="Filter doctors by department"
+                      class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-1 focus:ring-teal-500 font-body">
+                <option value="">All Departments</option>
+                <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            <button (click)="showAddForm()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md flex items-center gap-2">
+              <i class="fas fa-plus"></i> Add Doctor
+            </button>
+          </div>
+        </div>
+
+        <!-- Doctors Table -->
+        <div class="responsive-table">
+          <table class="w-full">
+            <thead>
+              <tr class="text-left text-gray-600">
+                <th class="px-6 py-3 border-b border-gray-200">Doctor</th>
+                <th class="px-6 py-3 border-b border-gray-200">Department</th>
+                <th class="px-6 py-3 border-b border-gray-200">Contact</th>
+                <th class="px-6 py-3 border-b border-gray-200">Availability</th>
+                <th class="px-6 py-3 border-b border-gray-200">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700">
+              <tr *ngFor="let doctor of paginatedDoctors" class="hover:bg-gray-50">
+                <td class="px-6 py-4 border-b border-gray-200">
+                  <div class="flex items-center">
+                    <img [src]="doctor.avatar" class="h-10 w-10 rounded-full object-cover mr-3">
+                    <div>
+                      <div class="font-medium">{{doctor.full_name}}</div>
+                      <div class="text-sm text-gray-500">{{doctor.email}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 border-b border-gray-200">
+                  <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                    {{doctor.department}}
+                  </span>
+                </td>
+                <td class="px-6 py-4 border-b border-gray-200 text-sm">
+                  {{doctor.contact_number}}
+                </td>
+                <td class="px-6 py-4 border-b border-gray-200">
+                  <div class="text-sm">{{doctor.schedule}}</div>
+                  <div class="text-xs text-gray-500">{{doctor.availableSlots}} slots available</div>
+                </td>
+                <td class="px-6 py-4 border-b border-gray-200">
+                  <button (click)="viewDoctor(doctor)" class="text-teal-600 hover:text-teal-800 mr-3">
+                    <i class="fas fa-eye mr-1"></i> View
+                  </button>
+                  <button (click)="showEditForm(doctor)" class="text-blue-600 hover:text-blue-800 mr-3">
+                    <i class="fas fa-edit mr-1"></i> Edit
+                  </button>
+                  <button (click)="initiateDelete(doctor)" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="filteredDoctors.length === 0">
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500">No doctors found matching your criteria</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-6">
+          <div class="text-sm text-gray-600">
+            Showing <span class="font-medium">{{(currentPage - 1) * itemsPerPage + 1}}</span> to <span class="font-medium">{{getEndIndex()}}</span> of <span class="font-medium">{{filteredDoctors.length}}</span> doctors
+          </div>
+          <div class="flex space-x-2">
+            <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                    class="px-3 py-1 border rounded-lg text-gray-600 hover:bg-gray-100">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <ng-container *ngIf="totalPages > 0">
+              <button *ngIf="currentPage > 3 && totalPages > 3" class="px-3 py-1">...</button>
+
+              <button *ngFor="let page of getPages()"
+                      (click)="changePage(page)"
+                      class="px-3 py-1 border rounded-lg"
+                      [class.bg-teal-600]="page === currentPage"
+                      [class.text-white]="page === currentPage"
+                      [class.text-gray-600]="page !== currentPage"
+                      [class.hover:bg-gray-100]="page !== currentPage">
+                {{ page }}
+              </button>
+
+              <button *ngIf="currentPage < totalPages - 2 && totalPages > 3" class="px-3 py-1">...</button>
+            </ng-container>
+
+            <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages || totalPages === 0"
+                    class="px-3 py-1 border rounded-lg text-gray-600 hover:bg-gray-100">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

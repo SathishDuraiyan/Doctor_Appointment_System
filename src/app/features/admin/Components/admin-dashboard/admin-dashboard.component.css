@@ -1,0 +1,121 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Julius+Sans+One&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Oswald:wght@200..700&display=swap');
+
+
+@import "tailwindcss";
+
+@layer utilities {
+    .font-title {
+        font-family: 'Julius Sans One', sans-serif;
+    }
+    .font-body {
+        font-family: 'Instrument Sans', sans-serif;
+    }
+    .font-banner {
+        font-family: 'Oswald', sans-serif;
+    }
+    .font-lin {
+        font-family: 'Literata', serif;
+    }
+    .text-gradient-gold {
+        background: linear-gradient(90deg, #ffe864, #745315);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+  }
+
+/* admin-dashboard.component.css */
+.doctor-avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.appointment-card {
+  transition: all 0.3s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-bottom: 15px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #115e59;
+  color: white;
+  border-color: #115e59;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

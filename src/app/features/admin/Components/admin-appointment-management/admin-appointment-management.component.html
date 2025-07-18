@@ -1,0 +1,1320 @@
+<div class="min-h-screen bg-gray-50 p-6 font-body">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 font-body">
+            Appointment Management
+          </h1>
+          <p class="text-gray-600 mt-1 font-body">
+            Manage all patient appointments
+          </p>
+        </div>
+        <button
+          (click)="exportAppointments()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-body"
+        >
+          <i class="fas fa-download mr-2"></i>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 font-body"
+    >
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <i class="fas fa-calendar-alt text-blue-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">Total</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.total }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-yellow-100 rounded-lg">
+            <i class="fas fa-clock text-yellow-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">Pending</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.pending }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-green-100 rounded-lg">
+            <i class="fas fa-check-circle text-green-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">Confirmed</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.confirmed }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-red-100 rounded-lg">
+            <i class="fas fa-times-circle text-red-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">Cancelled</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.cancelled }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <i class="fas fa-calendar-check text-blue-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">Completed</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.completed }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center">
+          <div class="p-2 bg-gray-100 rounded-lg">
+            <i class="fas fa-exclamation-triangle text-gray-600"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-gray-600 font-body">No Show</p>
+            <p class="text-xl font-semibold text-gray-900 font-body">
+              {{ stats.noShow }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 font-body"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1 font-body"
+            >Search</label
+          >
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onFilterChange()"
+            placeholder="Patient, Doctor, or Purpose"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-body"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1 font-body"
+            >Status</label
+          >
+          <select
+            [(ngModel)]="statusFilter"
+            (change)="onFilterChange()"
+            title="Filter by appointment status"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-body"
+          >
+            <option value="all" class="font-body">All Status</option>
+            <option value="PENDING" class="font-body">Pending</option>
+            <option value="CONFIRMED" class="font-body">Confirmed</option>
+            <option value="CANCELLED" class="font-body">Cancelled</option>
+            <option value="COMPLETED" class="font-body">Completed</option>
+            <option value="NO_SHOW" class="font-body">No Show</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1 font-body"
+            >Date</label
+          >
+          <input
+            type="date"
+            [(ngModel)]="dateFilter"
+            (change)="onFilterChange()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-body"
+          />
+        </div>
+
+        <div class="flex items-end">
+          <button
+            (click)="loadAppointments()"
+            class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-body"
+          >
+            <i class="fas fa-sync-alt mr-2"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div
+      *ngIf="isLoading"
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 font-body"
+    >
+      <div class="text-center">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"
+        ></div>
+        <p class="mt-4 text-gray-600 font-body">Loading appointments...</p>
+      </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <div
+      *ngIf="!isLoading"
+      class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden font-body"
+    >
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Patient
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Doctor
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Date & Time
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Purpose
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- Empty State -->
+            <tr *ngIf="paginatedAppointments.length === 0">
+              <td
+                colspan="6"
+                class="px-6 py-8 text-center text-gray-500 font-body"
+              >
+                <div class="text-gray-400 mb-2">
+                  <i class="fas fa-calendar-alt text-4xl"></i>
+                </div>
+                <p class="text-lg font-body">No appointments found</p>
+                <p class="text-sm font-body">
+                  Try adjusting your filters or check back later
+                </p>
+              </td>
+            </tr>
+
+            <!-- Appointment Rows -->
+            <tr
+              *ngFor="let appointment of paginatedAppointments"
+              class="hover:bg-gray-50 transition-colors font-body"
+            >
+              <!-- ...existing code for appointment row... -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-gray-600"></i>
+                  </div>
+                  <div class="ml-4">
+                    <button
+                      (click)="
+                        viewPatientProfile(
+                          appointment.patientId,
+                          appointment.patientName
+                        )
+                      "
+                      class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left font-body"
+                    >
+                      {{ appointment.patientName }}
+                    </button>
+                    <div class="text-sm text-gray-500 font-body">
+                      {{ appointment.patientEmail }}
+                    </div>
+                    <div class="text-xs text-gray-400 font-body">
+                      {{ appointment.patientPhone }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div>
+                  <button
+                    (click)="
+                      viewDoctorProfile(
+                        appointment.doctorId,
+                        appointment.doctorName
+                      )
+                    "
+                    class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors text-left font-body"
+                  >
+                    {{ appointment.doctorName }}
+                  </button>
+                  <div class="text-sm text-gray-500 font-body">
+                    {{ appointment.doctorSpecialization }}
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">
+                  {{ formatDate(appointment.appointmentDate) }}
+                </div>
+                <div class="text-sm text-gray-500 font-body">
+                  {{ formatTime(appointment.appointmentTime) }}
+                </div>
+              </td>
+
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-900 font-body">
+                  {{ appointment.purpose }}
+                </div>
+                <div
+                  *ngIf="appointment.insuranceProvider"
+                  class="text-xs text-gray-500 font-body"
+                >
+                  Insurance: {{ appointment.insuranceProvider }}
+                </div>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full font-body"
+                  [ngClass]="getStatusColor(appointment.status)"
+                >
+                  <i
+                    [class]="getStatusIcon(appointment.status)"
+                    class="mr-1 mt-1"
+                  ></i>
+                  {{ appointment.status }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex space-x-2">
+                  <!-- View Patient Profile Button -->
+                  <button
+                    (click)="viewAppointment(appointment)"
+                    class="text-indigo-600 hover:text-indigo-900 font-body"
+                    title="View Patient Profile"
+                  >
+                    <i class="fas fa-user"></i>
+                  </button>
+
+                  <!-- Approve Button -->
+                  <button
+                    *ngIf="appointment.status === AppointmentStatus.PENDING"
+                    (click)="approveAppointment(appointment.id)"
+                    class="text-green-600 hover:text-green-900 font-body"
+                    title="Approve"
+                  >
+                    <i class="fas fa-check"></i>
+                  </button>
+
+                  <!-- Cancel Button -->
+                  <button
+                    *ngIf="
+                      appointment.status === AppointmentStatus.PENDING ||
+                      appointment.status === AppointmentStatus.CONFIRMED
+                    "
+                    (click)="cancelAppointment(appointment.id)"
+                    class="text-red-600 hover:text-red-900 font-body"
+                    title="Cancel"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+
+                  <!-- Mark as Completed -->
+                  <button
+                    *ngIf="appointment.status === AppointmentStatus.CONFIRMED"
+                    (click)="
+                      updateAppointmentStatus(
+                        appointment.id,
+                        AppointmentStatus.COMPLETED
+                      )
+                    "
+                    class="text-blue-600 hover:text-blue-900 font-body"
+                    title="Mark as Completed"
+                  >
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+
+                  <!-- Mark as No Show -->
+                  <button
+                    *ngIf="appointment.status === AppointmentStatus.CONFIRMED"
+                    (click)="
+                      updateAppointmentStatus(
+                        appointment.id,
+                        AppointmentStatus.NO_SHOW
+                      )
+                    "
+                    class="text-gray-600 hover:text-gray-900 font-body"
+                    title="Mark as No Show"
+                  >
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Pagination Controls -->
+        <div class="flex justify-end items-center mt-4 space-x-2">
+          <button
+            (click)="prevPage()"
+            [disabled]="currentPage === 1"
+            class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 font-body"
+          >
+            Prev
+          </button>
+          <span class="font-body"
+            >Page {{ currentPage }} of {{ totalPages }}</span
+          >
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 font-body"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reschedule Requests Section -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-8 font-body"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 mb-4 font-body">
+        Reschedule Requests
+      </h2>
+      <div
+        *ngIf="rescheduleRequests.length === 0"
+        class="text-center text-gray-500 font-body"
+      >
+        <i class="fas fa-calendar-alt text-2xl mb-2"></i>
+        <p>No reschedule requests found.</p>
+      </div>
+      <div *ngIf="rescheduleRequests.length > 0" class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Appointment ID
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Doctor
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Patient
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Current Date/Time
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Requested Date/Time
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Reason
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Status
+              </th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let req of rescheduleRequests">
+              <td class="px-4 py-2 font-body">{{ req.appointmentId }}</td>
+              <td class="px-4 py-2 font-body">{{ req.doctorId }}</td>
+              <td class="px-4 py-2 font-body">{{ req.patientId }}</td>
+              <td class="px-4 py-2 font-body">
+                {{ getAppointmentDate(req.appointmentId) }}<br />
+                {{ getAppointmentDate(req.appointmentId) }}
+              </td>
+              <td class="px-4 py-2 font-body">
+                {{ req.newDate }}<br />
+                {{ req.newSlotStartTime }}
+              </td>
+              <td class="px-4 py-2 font-body">{{ req.reason }}</td>
+              <td class="px-4 py-2 font-body">
+                <span [ngClass]="{
+                  'text-yellow-600': req.status === 'REQUESTED',
+                  'text-green-600': req.status === 'SUCCESSFUL',
+                  'text-red-600': req.status === 'REJECTED' || req.status === 'RESCHEDULE_CANCELLED'
+                }">
+                  {{ req.status }}
+                </span>
+              </td>
+              <td class="px-4 py-2 font-body">
+                <button
+                  (click)="approveReschedule(req)"
+                  [disabled]="!canApproveReschedule(req)"
+                  class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-body mr-2"
+                >
+                  Approve
+                </button>
+                <button
+                  (click)="cancelReschedule(req)"
+                  class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 font-body"
+                >
+                  Reject
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Weekly View Section -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 font-body"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 mb-4 font-body">
+        Weekly Appointments Overview
+      </h2>
+
+      <div class="grid grid-cols-7 gap-2">
+        <div
+          *ngFor="
+            let day of [
+              'Monday',
+              'Tuesday',
+              'Wednesday',
+              'Thursday',
+              'Friday',
+              'Saturday',
+              'Sunday'
+            ];
+            let i = index
+          "
+          class="text-center"
+        >
+          <div class="p-2 bg-gray-50 rounded-t-lg">
+            <div class="text-sm font-medium text-gray-700 font-body">
+              {{ day }}
+            </div>
+          </div>
+          <div
+            class="border-x border-b border-gray-200 rounded-b-lg min-h-[150px] p-2"
+          >
+            <div
+              *ngFor="let appointment of getWeeklyAppointments()[getDayDate(i)]"
+              class="mb-2 p-2 bg-white border rounded text-xs font-body"
+            >
+              <button
+                (click)="
+                  viewPatientProfile(
+                    appointment.patientId,
+                    appointment.patientName
+                  )
+                "
+                class="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors block text-left w-full font-body"
+              >
+                {{ appointment.patientName }}
+              </button>
+              <button
+                (click)="
+                  viewDoctorProfile(
+                    appointment.doctorId,
+                    appointment.doctorName
+                  )
+                "
+                class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors block text-left w-full font-body"
+              >
+                {{ appointment.doctorName }}
+              </button>
+              <div class="text-gray-500 font-body">
+                {{ formatTime(appointment.appointmentTime) }}
+              </div>
+              <div
+                class="text-xs font-body"
+                [ngClass]="getStatusColor(appointment.status)"
+              >
+                {{ appointment.status }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient Profile Modal -->
+  <div
+    *ngIf="showPatientProfileModal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 font-body"
+  >
+    <div
+      class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white"
+    >
+      <div class="mt-3">
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between pb-4 border-b border-gray-200"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 font-body">
+            Patient Profile
+            <span
+              *ngIf="selectedPatientProfile?.currentAppointment"
+              class="text-sm text-gray-500 font-normal font-body"
+            >
+              - Appointment Details
+            </span>
+          </h3>
+          <button
+            (click)="closePatientProfileModal()"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="py-4 max-h-96 overflow-y-auto">
+          <!-- Loading State -->
+          <div *ngIf="loadingPatientProfile" class="text-center py-8 font-body">
+            <div
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
+            ></div>
+            <p class="mt-2 text-gray-600 font-body">
+              Loading patient profile...
+            </p>
+          </div>
+
+          <!-- No Profile Found State -->
+          <div
+            *ngIf="!loadingPatientProfile && !selectedPatientProfile"
+            class="text-center py-8 font-body"
+          >
+            <div class="text-gray-400 mb-2">
+              <i class="fas fa-user-times text-4xl"></i>
+            </div>
+            <p class="text-lg text-gray-600 font-body">
+              Patient profile not found
+            </p>
+            <p class="text-sm text-gray-500 font-body">
+              The patient profile could not be loaded
+            </p>
+          </div>
+
+          <!-- Profile Content -->
+          <div
+            *ngIf="!loadingPatientProfile && selectedPatientProfile"
+            class="space-y-6"
+          >
+            <!-- Current Appointment Details (if viewing from appointment) -->
+            <div
+              *ngIf="selectedPatientProfile.currentAppointment"
+              class="bg-blue-50 rounded-lg p-4 font-body"
+            >
+              <h4 class="text-md font-semibold text-blue-800 mb-3 font-body">
+                Current Appointment
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-sm font-medium text-blue-700 font-body"
+                    >Doctor</label
+                  >
+                  <p class="text-sm text-blue-900 font-body">
+                    {{ selectedPatientProfile.currentAppointment.doctorName }}
+                  </p>
+                  <p class="text-xs text-blue-600 font-body">
+                    {{
+                      selectedPatientProfile.currentAppointment
+                        .doctorSpecialization
+                    }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-blue-700 font-body"
+                    >Date & Time</label
+                  >
+                  <p class="text-sm text-blue-900 font-body">
+                    {{
+                      formatDate(
+                        selectedPatientProfile.currentAppointment
+                          .appointmentDate
+                      )
+                    }}
+                  </p>
+                  <p class="text-xs text-blue-600 font-body">
+                    {{
+                      formatTime(
+                        selectedPatientProfile.currentAppointment
+                          .appointmentTime
+                      )
+                    }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-blue-700 font-body"
+                    >Purpose</label
+                  >
+                  <p class="text-sm text-blue-900 font-body">
+                    {{ selectedPatientProfile.currentAppointment.purpose }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-blue-700 font-body"
+                    >Status</label
+                  >
+                  <span
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full font-body"
+                    [ngClass]="
+                      getStatusColor(
+                        selectedPatientProfile.currentAppointment.status
+                      )
+                    "
+                  >
+                    {{ selectedPatientProfile.currentAppointment.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Personal Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Full Name</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.name }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Patient ID</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.id }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Email</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.email }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Phone</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.phone }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Date of Birth</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.dateOfBirth }}
+                  </p>
+                  <p
+                    class="text-xs text-gray-500 font-body"
+                    *ngIf="
+                      selectedPatientProfile.dateOfBirth !== 'Not provided'
+                    "
+                  >
+                    {{ calculateAge(selectedPatientProfile.dateOfBirth) }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Gender</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.gender }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Blood Type</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.bloodType }}
+                  </p>
+                </div>
+                <div
+                  *ngIf="
+                    selectedPatientProfile.patientIdNumber !== 'Not provided'
+                  "
+                >
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Patient ID Number</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.patientIdNumber }}
+                  </p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <label class="text-sm font-medium text-gray-600 font-body"
+                  >Address</label
+                >
+                <p class="text-sm text-gray-900 font-body">
+                  {{ selectedPatientProfile.address }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Emergency Contact
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Contact Name</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.emergencyContact }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Contact Phone</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.emergencyPhone }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Relationship</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.emergencyRelation }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Medical Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Medical Information
+              </h4>
+              <div class="space-y-3">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Allergies</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.allergies }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Current Medications</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.medications }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Medical History</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.medicalHistory }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insurance Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Insurance Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Insurance Provider</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.insurance }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Policy Number</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.policyNumber }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Appointment Details (if viewing from appointment) -->
+            <div
+              *ngIf="selectedPatientProfile.currentAppointment"
+              class="font-body"
+            >
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Current Appointment Details
+              </h4>
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Appointment Date</label
+                    >
+                    <p class="text-sm text-gray-900 font-body">
+                      {{
+                        formatDate(
+                          selectedPatientProfile.currentAppointment
+                            .appointmentDate
+                        )
+                      }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Appointment Time</label
+                    >
+                    <p class="text-sm text-gray-900 font-body">
+                      {{
+                        formatTime(
+                          selectedPatientProfile.currentAppointment
+                            .appointmentTime
+                        )
+                      }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Doctor</label
+                    >
+                    <p class="text-sm text-gray-900 font-body">
+                      {{ selectedPatientProfile.currentAppointment.doctorName }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Specialization</label
+                    >
+                    <p class="text-sm text-gray-900 font-body">
+                      {{
+                        selectedPatientProfile.currentAppointment
+                          .doctorSpecialization
+                      }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Purpose</label
+                    >
+                    <p class="text-sm text-gray-900 font-body">
+                      {{ selectedPatientProfile.currentAppointment.purpose }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-gray-600 font-body"
+                      >Status</label
+                    >
+                    <span
+                      class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full font-body"
+                      [ngClass]="
+                        getStatusColor(
+                          selectedPatientProfile.currentAppointment.status
+                        )
+                      "
+                    >
+                      <i
+                        [class]="
+                          getStatusIcon(
+                            selectedPatientProfile.currentAppointment.status
+                          )
+                        "
+                        class="mr-1"
+                      ></i>
+                      {{ selectedPatientProfile.currentAppointment.status }}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="mt-4"
+                  *ngIf="selectedPatientProfile.currentAppointment.notes"
+                >
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Notes</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedPatientProfile.currentAppointment.notes }}
+                  </p>
+                </div>
+                <div class="mt-4 flex justify-end">
+                  <button
+                    (click)="
+                      bookReAppointment(
+                        selectedPatientProfile.currentAppointment.doctorId,
+                        selectedPatientProfile.currentAppointment.doctorName,
+                        selectedPatientProfile.id
+                      )
+                    "
+                    class="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors font-body"
+                  >
+                    <i class="fas fa-calendar-plus mr-2"></i>
+                    Book Re-appointment with Same Doctor
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Medical Records Section -->
+            <div
+              *ngIf="
+                selectedPatientProfile.medicalRecords &&
+                selectedPatientProfile.medicalRecords.length > 0
+              "
+              class="font-body"
+            >
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Medical Records (Completed Appointments)
+              </h4>
+              <div
+                class="space-y-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3"
+              >
+                <div
+                  *ngFor="let record of selectedPatientProfile.medicalRecords"
+                  class="bg-gray-50 p-3 rounded-lg border-l-4 border-blue-500"
+                >
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <div class="flex items-center justify-between mb-2">
+                        <h5 class="font-medium text-gray-900 font-body">
+                          {{ record.doctorName }}
+                        </h5>
+                        <span class="text-xs text-gray-500 font-body">{{
+                          formatDate(record.date)
+                        }}</span>
+                      </div>
+                      <p class="text-sm text-gray-600 mb-1 font-body">
+                        {{ record.specialization }}
+                      </p>
+                      <p class="text-sm text-gray-700 font-body">
+                        <span class="font-medium">Purpose:</span>
+                        {{ record.purpose }}
+                      </p>
+                      <p class="text-sm text-gray-700 font-body">
+                        <span class="font-medium">Time:</span>
+                        {{ formatTime(record.time) }} ({{
+                          record.duration
+                        }}
+                        min)
+                      </p>
+                      <p
+                        class="text-sm text-gray-700 font-body"
+                        *ngIf="record.notes !== 'No notes recorded'"
+                      >
+                        <span class="font-medium">Notes:</span>
+                        {{ record.notes }}
+                      </p>
+                    </div>
+                    <div class="ml-3">
+                      <button
+                        (click)="
+                          bookReAppointment(
+                            record.doctorId,
+                            record.doctorName,
+                            selectedPatientProfile.id
+                          )
+                        "
+                        class="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors font-body"
+                        title="Book re-appointment with same doctor"
+                      >
+                        <i class="fas fa-calendar-plus mr-1"></i>
+                        Re-book
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Registration Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Registration Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Registration Date</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ formatDate(selectedPatientProfile.registrationDate) }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Profile Status</label
+                  >
+                  <span
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full font-body"
+                    [ngClass]="
+                      selectedPatientProfile.profileCompleted
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    "
+                  >
+                    {{
+                      selectedPatientProfile.profileCompleted
+                        ? "Complete"
+                        : "Incomplete"
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end pt-4 border-t border-gray-200">
+          <button
+            (click)="closePatientProfileModal()"
+            class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors font-body"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor Profile Modal -->
+  <div
+    *ngIf="showDoctorProfileModal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 font-body"
+  >
+    <div
+      class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white"
+    >
+      <div class="mt-3">
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between pb-4 border-b border-gray-200"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 font-body">
+            Doctor Profile
+          </h3>
+          <button
+            (click)="closeDoctorProfileModal()"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div
+          class="py-4 max-h-96 overflow-y-auto"
+          *ngIf="selectedDoctorProfile"
+        >
+          <div class="space-y-6">
+            <!-- Doctor Photo and Basic Info -->
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center"
+              >
+                <img
+                  *ngIf="
+                    selectedDoctorProfile.profileImage &&
+                    selectedDoctorProfile.profileImage !==
+                      '/assets/doctors/default-doctor.jpg'
+                  "
+                  [src]="selectedDoctorProfile.profileImage"
+                  [alt]="selectedDoctorProfile.name"
+                  class="w-full h-full object-cover"
+                />
+                <i
+                  *ngIf="
+                    !selectedDoctorProfile.profileImage ||
+                    selectedDoctorProfile.profileImage ===
+                      '/assets/doctors/default-doctor.jpg'
+                  "
+                  class="fas fa-user-md text-2xl text-gray-600"
+                ></i>
+              </div>
+              <div>
+                <h4 class="text-lg font-semibold text-gray-900 font-body">
+                  {{ selectedDoctorProfile.name }}
+                </h4>
+                <p class="text-sm text-gray-600 font-body">
+                  {{ selectedDoctorProfile.specialization }}
+                </p>
+                <p class="text-xs text-gray-500 font-body">
+                  {{ selectedDoctorProfile.department }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Professional Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Qualification</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedDoctorProfile.qualification }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Experience</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ formatExperience(selectedDoctorProfile.experience) }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >License Number</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedDoctorProfile.licenseNumber }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Consultation Fee</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    ${{ selectedDoctorProfile.consultationFee }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Contact Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Email</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedDoctorProfile.email }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Phone</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ selectedDoctorProfile.phone }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status and Join Date -->
+            <div class="font-body">
+              <h4 class="text-md font-semibold text-gray-800 mb-3 font-body">
+                Status Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Status</label
+                  >
+                  <span
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full font-body"
+                    [ngClass]="
+                      selectedDoctorProfile.status === 'active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    "
+                  >
+                    {{ selectedDoctorProfile.status | titlecase }}
+                  </span>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-600 font-body"
+                    >Join Date</label
+                  >
+                  <p class="text-sm text-gray-900 font-body">
+                    {{ formatDate(selectedDoctorProfile.joinDate) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end pt-4 border-t border-gray-200">
+          <button
+            (click)="closeDoctorProfileModal()"
+            class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors font-body"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

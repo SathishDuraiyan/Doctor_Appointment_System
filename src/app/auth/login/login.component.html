@@ -1,0 +1,160 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <!-- Main container - centered with max width -->
+  <div class="w-full max-w-6xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div class="flex min-h-[600px]">
+      <!-- Left side - Image -->
+      <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-teal-900 to-teal-700">
+        <!-- Background image with overlay -->
+        <div class="absolute inset-0">
+          <img src="assets/new-bg-1.jpg" alt="Modern Design" class="w-full h-full object-cover opacity-60">
+          <div class="absolute inset-0 bg-gradient-to-br from-teal-900/70 to-teal-900/80"></div>
+        </div>
+
+        <!-- Content overlay -->
+        <div class="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div class="max-w-md">
+            <h1 class="text-4xl font-bold mb-6 leading-tight">
+              Welcome to<br>
+              <span class="text-teal-400">Doctor Appointment</span><br>
+              System
+            </h1>
+            <p class="text-lg text-gray-300 mb-8">
+              Your trusted healthcare management platform. Please login to continue to your dashboard.
+            </p>
+            <div class="flex items-center space-x-6 text-sm">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-teal-400 rounded-full mr-2"></div>
+                <span>Secure Login</span>
+              </div>
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-400 rounded-full mr-2"></div>
+                <span>24/7 Support</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Back to Home button -->
+        <div class="absolute top-6 left-6 z-20">
+          <button type="button" routerLink="/home" class="cursor-pointer flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20">
+            <i class="fas fa-arrow-left mr-2"></i>
+            <a  class="text-sm font-medium">Back to Home</a>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side - Login Form -->
+      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12">
+        <div class="w-full max-w-md space-y-8">
+          <!-- Header -->
+          <div class="text-center">
+            <h1 class="text-3xl font-bold font-body text-teal-700">StramHawkX</h1>
+            <h2 class="text-3xl font-bold text-teal-700">Login</h2>
+            <p class="mt-2 text-sm text-gray-600">Please login to continue</p>
+          </div>
+
+          <!-- Toast Message -->
+          <div *ngIf="showToast" class="p-4 rounded-lg transition-all duration-300"
+               [class.bg-red-50]="isErrorToast"
+               [class.bg-green-50]="!isErrorToast"
+               [class.text-red-800]="isErrorToast"
+               [class.text-green-800]="!isErrorToast"
+               [class.border-red-200]="isErrorToast"
+               [class.border-green-200]="!isErrorToast"
+               class="border">
+            <div class="flex items-center">
+              <i class="fas mr-3"
+                 [class.fa-exclamation-circle]="isErrorToast"
+                 [class.fa-check-circle]="!isErrorToast"></i>
+              {{ toastMessage }}
+            </div>
+          </div>
+
+          <!-- Login Form -->
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6" novalidate>
+            <!-- Email Field -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-600">*</span></label>
+              <input
+                id="email"
+                formControlName="email"
+                type="email"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 placeholder-gray-400"
+                [class.border-red-500]="getFormControl('email')?.invalid && getFormControl('email')?.touched"
+                [class.focus:ring-red-500]="getFormControl('email')?.invalid && getFormControl('email')?.touched"
+                placeholder="Enter your email"
+                autocomplete="email"
+              />
+              <div class="mt-2 text-red-600 text-sm" *ngIf="getFormControl('email')?.invalid && getFormControl('email')?.touched">
+                <span *ngIf="getFormControl('email')?.errors?.['required']">Email is required.</span>
+                <span *ngIf="getFormControl('email')?.errors?.['email']">Please enter a valid email.</span>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-600">*</span></label>
+              <div class="relative">
+                <input
+                  id="password"
+                  formControlName="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg pr-12 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 placeholder-gray-400"
+                  [class.border-red-500]="getFormControl('password')?.invalid && getFormControl('password')?.touched"
+                  [class.focus:ring-red-500]="getFormControl('password')?.invalid && getFormControl('password')?.touched"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                >
+                  <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                </button>
+              </div>
+              <div class="mt-2 text-red-600 text-sm" *ngIf="getFormControl('password')?.invalid && getFormControl('password')?.touched">
+                <span *ngIf="getFormControl('password')?.errors?.['required']">Password is required.</span>
+              </div>
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="flex items-center justify-between">
+              <div class="text-sm">
+                <a routerLink="/forget" class="text-teal-600 hover:text-teal-500 font-medium transition-colors">
+                  Forgot Password?
+                </a>
+              </div>
+              <div class="text-sm">
+                <span class="text-gray-500">Don't have an account?</span>
+                <a routerLink="/register" class="text-teal-600 hover:text-teal-500 font-medium ml-1 transition-colors">
+                  Sign up
+                </a>
+              </div>
+            </div>
+
+            <!-- Login Button -->
+            <button
+              type="submit"
+              class="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="loginForm.invalid || isLoading"
+            >
+              <span *ngIf="!isLoading" class="flex items-center">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Login
+              </span>
+              <span *ngIf="isLoading" class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

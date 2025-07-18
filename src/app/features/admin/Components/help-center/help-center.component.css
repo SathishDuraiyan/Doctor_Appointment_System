@@ -1,0 +1,94 @@
+.help-section {
+  display: none;
+  animation: fadeInUp 0.4s ease-out;
+
+  &.active {
+    display: block;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.help-nav-item {
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: #f0fdf4;
+    transform: translateX(2px);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #0d9488, #44b1a4);
+    color: white;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+  }
+}
+
+.feature-card {
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.faq-question {
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f3f4f6 !important;
+  }
+}
+
+.faq-answer {
+  transition: all 0.3s ease;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.bg-teal-600:hover {
+  background-color: #0d9488;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+}
+
+/* Focus states for accessibility */
+.help-nav-item:focus,
+.faq-question:focus,
+button:focus {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .help-nav-item {
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .feature-card {
+    margin-bottom: 1rem;
+  }
+}

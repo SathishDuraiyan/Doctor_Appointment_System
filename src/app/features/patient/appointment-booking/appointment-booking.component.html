@@ -1,0 +1,320 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Debug Section (for development) -->
+    <!-- <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+      <h3 class="font-semibold text-yellow-800 mb-2">Debug Tools</h3>
+      <div class="flex space-x-4">
+        <button (click)="createSampleSlots()"
+                class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm">
+          Create Sample Slots
+        </button>
+        <button (click)="debugInfo()"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+          Show Debug Info
+        </button>
+        <button (click)="clearSchedules()"
+                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
+          Clear All Schedules
+        </button>
+      </div>
+    </div> -->
+
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">
+        Book New Appointment
+      </h1>
+
+      <!-- Progress Steps -->
+      <div class="flex items-center space-x-4 mt-4">
+        <div *ngFor="let step of [1, 2, 3, 4]; let i = index"
+             class="flex items-center">
+          <div class="flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium"
+               [ngClass]="{
+                 'bg-teal-600 text-white': currentStep > step,
+                 'bg-teal-100 text-teal-600 border-2 border-teal-600': currentStep === step,
+                 'bg-gray-200 text-gray-500': currentStep < step
+               }">
+            <i *ngIf="currentStep > step" class="fas fa-check"></i>
+            <span *ngIf="currentStep <= step">{{ step }}</span>
+          </div>
+          <div *ngIf="i < 3" class="w-72 h-1 mx-2"
+               [ngClass]="{
+                 'bg-teal-600': currentStep > step + 1,
+                 'bg-gray-200': currentStep <= step + 1
+               }"></div>
+        </div>
+      </div>
+
+      <!-- Step Labels -->
+      <div class="flex justify-between mt-2 text-sm text-gray-600">
+        <span [ngClass]="{'text-teal-600 font-medium': currentStep === 1}">Select Category</span>
+        <span [ngClass]="{'text-teal-600 font-medium': currentStep === 2}">Choose Doctor</span>
+        <span [ngClass]="{'text-teal-600 font-medium': currentStep === 3}">Pick Date & Time</span>
+        <span [ngClass]="{'text-teal-600 font-medium': currentStep === 4}">Confirm Details</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Select Category -->
+    <div *ngIf="currentStep === 1" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Select Medical Category</h2>
+
+      <div *ngIf="isLoading" class="text-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading categories...</p>
+      </div>
+
+      <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let category of categories"
+             (click)="selectCategory(category)"
+             class="category-card p-6 border rounded-lg cursor-pointer hover:shadow-md transition-all duration-200"
+             [style.border-color]="category.color">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center text-white"
+                 [style.background-color]="category.color">
+              <i [class]="category.icon" class="text-xl"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900">{{ category.name }}</h3>
+              <p class="text-sm text-gray-600">{{ category.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Choose Doctor -->
+    <div *ngIf="currentStep === 2" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">Choose Doctor</h2>
+        <button (click)="previousStep()" class="text-teal-600 hover:text-teal-700">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Categories
+        </button>
+      </div>
+
+      <div *ngIf="selectedCategory" class="mb-4 p-4 bg-teal-50 rounded-lg">
+        <p class="text-sm text-gray-600">Selected Category:</p>
+        <p class="font-semibold text-teal-800">{{ selectedCategory.name }}</p>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading doctors...</p>
+      </div>
+
+      <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let doctor of availableDoctors"
+             (click)="selectDoctor(doctor)"
+             class="doctor-card p-6 border rounded-lg cursor-pointer hover:shadow-md transition-all duration-200">
+          <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden">
+              <img *ngIf="doctor.profileImage" [src]="doctor.profileImage" [alt]="doctor.name" class="w-full h-full object-cover">
+              <i *ngIf="!doctor.profileImage" class="fas fa-user-md text-2xl text-teal-600"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900">{{ doctor.name }}</h3>
+              <p class="text-sm text-gray-600">{{ doctor.specialization }}</p>
+              <p class="text-sm text-gray-500">{{ doctor.experience }} years experience</p>
+              <p class="text-sm font-medium text-teal-600">${{ doctor.consultationFee }}</p>
+            </div>
+            <div class="text-green-500">
+              <i class="fas fa-check-circle text-lg"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Pick Date & Time -->
+    <div *ngIf="currentStep === 3" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">Pick Date & Time</h2>
+        <button (click)="previousStep()" class="text-teal-600 hover:text-teal-700">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Doctors
+        </button>
+      </div>
+
+      <div *ngIf="selectedDoctor" class="mb-6 p-4 bg-teal-50 rounded-lg">
+        <p class="text-sm text-gray-600">Selected Doctor:</p>
+        <p class="font-semibold text-teal-800">{{ selectedDoctor.name }} - {{ selectedDoctor.specialization }}</p>
+      </div>
+
+      <!-- Week Navigation -->
+      <div class="flex items-center justify-between mb-4">
+        <button (click)="previousWeek()" class="p-2 rounded-lg hover:bg-gray-100">
+          <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+        <h3 class="text-lg font-semibold text-gray-900">
+          {{ currentWeekStart.toLocaleDateString() }} - {{ (currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000) | date:'shortDate' }}
+        </h3>
+        <button (click)="nextWeek()" class="p-2 rounded-lg hover:bg-gray-100">
+          <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading schedule...</p>
+      </div>
+
+      <!-- Weekly Schedule -->
+      <div *ngIf="!isLoading" class="grid grid-cols-7 gap-2">
+        <div *ngFor="let day of weekDays" class="text-center">
+          <div class="p-2 rounded-t-lg" [ngClass]="getDateClass(day.date)">
+            <div class="text-sm font-medium">{{ day.dayName }}</div>
+            <div class="text-lg font-semibold">{{ day.dayNumber }}</div>
+            <div *ngIf="getDateStatusText(day.date)" class="text-xs mt-1 px-2 py-1 rounded-full bg-opacity-20"
+                 [ngClass]="{
+                   'bg-red-500 text-red-600': isDateInPast(day.date),
+                   'bg-teal-500 text-teal-600': isToday(day.date),
+                   'bg-gray-500 text-gray-500': !isDateWithinBookingWindow(day.date) && !isDateInPast(day.date) && !isToday(day.date)
+                 }">
+              {{ getDateStatusText(day.date) }}
+            </div>
+          </div>
+          <div class="border-x border-b border-gray-200 rounded-b-lg min-h-[200px] p-2"
+               [ngClass]="{
+                 'bg-gray-50': isDateInPast(day.date) || !isDateWithinBookingWindow(day.date),
+                 'bg-white': isDateWithinBookingWindow(day.date) && !isDateInPast(day.date)
+               }">
+            <div *ngFor="let slot of getSlotsForDate(day.date)"
+                 (click)="selectSlot(slot)"
+                 class="slot-card mb-2 p-2 border rounded cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors">
+              <div class="text-sm font-medium text-gray-900">
+                {{ formatTime(slot.startTime) }} - {{ formatTime(slot.endTime) }}
+              </div>
+              <div class="text-xs text-gray-500">
+                {{ getSlotAvailabilityText(slot) }}
+              </div>
+            </div>
+            <div *ngIf="getSlotsForDate(day.date).length === 0" class="text-center text-gray-400 py-4">
+              <i class="fas fa-calendar-times text-2xl mb-2"></i>
+              <p class="text-xs" *ngIf="isDateInPast(day.date)">Past Date</p>
+              <p class="text-xs" *ngIf="!isDateInPast(day.date) && !isDateWithinBookingWindow(day.date)">Not Available</p>
+              <p class="text-xs" *ngIf="isDateWithinBookingWindow(day.date) && !isDateInPast(day.date)">No slots</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Confirm Details -->
+    <div *ngIf="currentStep === 4" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">Confirm Appointment Details</h2>
+        <button (click)="previousStep()" class="text-teal-600 hover:text-teal-700">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Schedule
+        </button>
+      </div>
+
+      <!-- Appointment Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="space-y-4">
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">Appointment Summary</h3>
+            <div class="space-y-2 text-sm">
+              <div><span class="font-medium">Doctor:</span> {{ selectedDoctor?.name }}</div>
+              <div><span class="font-medium">Specialization:</span> {{ selectedDoctor?.specialization }}</div>
+              <div><span class="font-medium">Date:</span> {{ selectedSlot?.date | date:'fullDate' }}</div>
+              <div><span class="font-medium">Time:</span> {{ formatTime(selectedSlot?.startTime) }} - {{ formatTime(selectedSlot?.endTime) }}</div>
+              <div><span class="font-medium">Consultation Fee:</span> ${{ selectedDoctor?.consultationFee }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Appointment Purpose *</label>
+            <textarea [(ngModel)]="bookingForm.purpose"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      rows="3"
+                      placeholder="Describe the reason for your visit..."
+                      required></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Patient ID Number</label>
+            <input type="text"
+                   [(ngModel)]="bookingForm.patientIdNumber"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                   placeholder="Enter your patient ID">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+            <textarea [(ngModel)]="bookingForm.notes"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      rows="2"
+                      placeholder="Any additional information..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between">
+        <button (click)="resetBooking()"
+                class="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+          Clear Form
+        </button>
+        <button *ngIf="selectedSlot && selectedSlot.status !== 'CANCELLED'"
+                (click)="cancelAppointment()"
+                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 ml-2">
+          <i class="fas fa-times mr-2"></i> Cancel Appointment
+        </button>
+        <button (click)="bookAppointment()"
+                [disabled]="!canGoToNextStep() || isBooking"
+                class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="isBooking" class="flex items-center">
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            Booking...
+          </span>
+          <span *ngIf="!isBooking">Book Appointment</span>
+        </button>
+        <!-- Change Appointment Date Button: Only show for not completed status -->
+        <button *ngIf="selectedSlot?.status !== 'COMPLETED'"
+                (click)="openChangeDateModal()"
+                class="px-6 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 ml-2">
+          <i class="fas fa-calendar-alt mr-2"></i> Change Appointment Date
+        </button>
+      </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div *ngIf="showRescheduleModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+        <button (click)="closeRescheduleModal()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Request Change of Appointment Date</h2>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Select New Date</label>
+          <input type="date" [(ngModel)]="rescheduleForm.newDate" (change)="onRescheduleDateChange()"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Select New Slot</label>
+          <select [(ngModel)]="rescheduleForm.newSlot" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <option value="" disabled selected>Select a slot</option>
+            <option *ngFor="let slot of availableSlotsForReschedule" [value]="slot.id">
+              {{ formatTime(slot.startTime) }} - {{ formatTime(slot.endTime) }} ({{ getSlotAvailabilityText(slot) }})
+            </option>
+          </select>
+          <div *ngIf="availableSlotsForReschedule.length === 0" class="text-xs text-gray-400 mt-2">No available slots for selected date.</div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Reason for Change</label>
+          <textarea [(ngModel)]="rescheduleForm.reason" rows="2"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    placeholder="Please provide a reason..."></textarea>
+        </div>
+        <div class="flex justify-end">
+          <button (click)="submitRescheduleRequest()"
+                  [disabled]="!rescheduleForm.newDate || !rescheduleForm.newSlot || !rescheduleForm.reason.trim()"
+                  class="px-6 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50">
+            Submit Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

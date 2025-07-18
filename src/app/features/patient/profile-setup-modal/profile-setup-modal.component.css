@@ -1,0 +1,175 @@
+/* Profile Setup Modal Styles */
+.modal-backdrop {
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  animation: slideIn 0.3s ease-out;
+  max-height: 90vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom form styling */
+.form-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-section h4 {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+/* Input focus effects */
+input:focus, textarea:focus, select:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+/* Button hover effects */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Toast notification styling */
+.toast-notification {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 10px;
+    width: calc(100% - 20px);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom scrollbar for modal content */
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Section icons styling */
+.section-icon {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+/* Form validation styling */
+.form-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+/* Success state styling */
+.form-success {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+/* Loading state styling */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Glassmorphism effect for modal */
+.glass-modal {
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced button styling */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 1px solid #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  border-color: #9ca3af;
+}

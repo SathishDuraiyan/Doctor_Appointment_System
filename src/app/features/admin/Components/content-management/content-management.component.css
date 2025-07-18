@@ -1,0 +1,18 @@
+.active {
+  border-bottom-color: #066062;
+  color: #066062;
+  font-weight: 500;
+}
+
+/* Ribbon adjustments for mobile */
+@media (max-width: 768px) {
+  .ribbon {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .ribbon-item {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,96 @@
+<div class="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 flex items-center justify-center p-4">
+  <!-- Toast Notification -->
+  <div *ngIf="showToast" class="fixed top-4 right-4 z-50 animate-slide-in">
+    <div
+      [class]="'px-6 py-4 rounded-lg shadow-lg flex items-center max-w-md ' +
+               (toastType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white')">
+      <i [class]="'mr-3 text-xl ' + (toastType === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle')"></i>
+      <span class="flex-1">{{toastMessage}}</span>
+      <button (click)="closeToast()" class="ml-4 hover:opacity-80 transition-opacity">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-teal-600 to-cyan-600 px-6 py-8 text-center">
+      <h1 class="text-2xl font-bold text-white mb-2">Account Setup Complete</h1>
+      <p class="text-teal-100">Welcome to our healthcare platform</p>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-check text-2xl text-green-600"></i>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Congratulations!</h2>
+        <p class="text-gray-600">Your account has been created successfully. You can now access your patient dashboard and manage your healthcare journey.</p>
+      </div>
+
+      <!-- Auto-redirect notice -->
+      <div *ngIf="isRedirecting" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="flex items-center">
+          <i class="fas fa-spinner fa-spin text-blue-500 mr-3"></i>
+          <div class="text-sm text-blue-700">
+            <p class="font-medium">Redirecting to your dashboard...</p>
+            <p>Please wait while we take you to your patient dashboard.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-3">
+        <button
+          (click)="proceedToPatientDashboard()"
+          [disabled]="isRedirecting"
+          class="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-3 px-4 rounded-lg hover:from-teal-700 hover:to-cyan-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fas fa-tachometer-alt mr-2"></i>
+          <span *ngIf="!isRedirecting">Go to Patient Dashboard</span>
+          <span *ngIf="isRedirecting">Redirecting...</span>
+        </button>
+
+        <button
+          (click)="goToLogin()"
+          [disabled]="isRedirecting"
+          class="w-full border border-teal-600 text-teal-600 py-3 px-4 rounded-lg hover:bg-teal-50 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fas fa-sign-in-alt mr-2"></i>
+          Sign In Instead
+        </button>
+      </div>
+
+      <!-- Info Note -->
+      <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="flex items-start">
+          <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-3"></i>
+          <div class="text-sm text-blue-700">
+            <p class="font-medium mb-1">What's Next:</p>
+            <ul class="list-disc list-inside space-y-1 text-blue-600">
+              <li>Complete your profile for personalized care</li>
+              <li>Schedule your first appointment</li>
+              <li>Access your medical records</li>
+              <li>Connect with healthcare providers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Section -->
+      <div class="mt-4 text-center">
+        <p class="text-xs text-gray-500">
+          Need help getting started?
+          <a href="#" class="text-teal-600 hover:text-teal-800 transition-colors">Contact Support</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-50 px-6 py-4 text-center">
+      <p class="text-sm text-gray-500">
+        Need help?
+        <a href="#" class="text-teal-600 hover:text-teal-700 font-medium">Contact Support</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,524 @@
+<div class="bg-gray-100 min-h-screen">
+  <!-- Header -->
+  <div class="bg-white p-4 shadow-sm">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-semibold text-gray-800">Content Management</h1>
+      <div class="flex items-center space-x-2">
+        <span class="text-sm text-gray-600">Today's Date</span>
+        <span class="text-sm font-semibold">{{ today | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ribbon Navigation -->
+  <div class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="container mx-auto overflow-x-auto">
+      <div class="flex">
+        <button *ngFor="let section of ['banners', 'contact', 'about', 'legacy', 'specialties', 'find-doctor', 'feedback']"
+                [class.active]="activeSection === section"
+                (click)="showSection(section)"
+                class="px-4 py-3 whitespace-nowrap border-b-2 border-transparent hover:bg-gray-50 transition-colors cursor-pointer"
+                [class.border-teal-600]="activeSection === section"
+                [class.text-teal-600]="activeSection === section"
+                [class.font-medium]="activeSection === section">
+          {{ section.replace('-', ' ') | titlecase }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-4 md:p-6">
+    <!-- Banners Section -->
+    <div *ngIf="activeSection === 'banners'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <h3 class="text-lg font-semibold text-gray-800">Homepage Banners</h3>
+        <button (click)="addBanner()" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition w-full md:w-auto">
+          <i class="fas fa-plus mr-2"></i>Add New Banner
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div *ngFor="let banner of banners" class="border border-gray-200 rounded-lg overflow-hidden">
+          <div class="h-48 bg-cover bg-center" [style.background-image]="'url(' + banner.imageUrl + ')'"></div>
+          <div class="p-3 md:p-4">
+            <h4 class="font-semibold text-gray-800 mb-1 truncate">{{ banner.title }}</h4>
+            <p class="text-xs md:text-sm text-gray-600 mb-2 truncate">{{ banner.subtitle }}</p>
+            <div class="flex justify-between items-center">
+              <span class="text-xs px-2 py-1 rounded"
+                    [class.bg-green-100]="banner.status === 'active'"
+                    [class.text-green-800]="banner.status === 'active'"
+                    [class.bg-gray-100]="banner.status === 'inactive'"
+                    [class.text-gray-800]="banner.status === 'inactive'">
+                {{ banner.status === 'active' ? 'Active' : 'Inactive' }}
+              </span>
+              <div class="flex space-x-2">
+                <button (click)="editBanner(banner)" class="text-blue-600 hover:text-blue-800">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button (click)="deleteBanner(banner.id)" class="text-red-600 hover:text-red-800">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Form Modal -->
+    <div *ngIf="isBannerFormVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-lg font-semibold">{{ bannerForm.value.id ? 'Edit Banner' : 'Add New Banner' }}</h3>
+          <button (click)="isBannerFormVisible = false" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="p-4">
+          <form [formGroup]="bannerForm" (ngSubmit)="saveBanner()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Banner Image</label>
+                  <div class="h-48 bg-gray-100 mb-2 rounded-lg overflow-hidden flex items-center justify-center">
+                    <div *ngIf="!bannerForm.value.imageUrl" class="text-gray-400">Preview will appear here</div>
+                    <img *ngIf="bannerForm.value.imageUrl" [src]="bannerForm.value.imageUrl" class="w-full h-full object-cover">
+                  </div>
+                  <input type="file" id="banner-image" class="hidden" accept="image/*"
+                         (change)="onFileSelected($event, 'banner')"
+                         title="Upload banner image"
+                         aria-label="Upload banner image">
+                  <button type="button" (click)="triggerFileInput('banner-image')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition w-full">
+                    <i class="fas fa-upload mr-2"></i>Upload Image
+                  </button>
+                  <div class="text-xs text-gray-500 mt-1">Recommended size: 1920x600px (JPG, PNG)</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+                  <input type="number" formControlName="order"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                         min="1"
+                         title="Display order for the banner"
+                         placeholder="Enter display order">
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <div class="flex items-center space-x-4">
+                    <label class="inline-flex items-center">
+                      <input type="radio" formControlName="status" value="active" class="form-radio text-teal-600">
+                      <span class="ml-2">Active</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input type="radio" formControlName="status" value="inactive" class="form-radio text-gray-400">
+                      <span class="ml-2">Inactive</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                  <input type="text" formControlName="title"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                         title="Banner title"
+                         placeholder="Enter banner title">
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                  <input type="text" formControlName="subtitle"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                         title="Banner subtitle"
+                         placeholder="Enter banner subtitle">
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea formControlName="description" rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            title="Banner description"
+                            placeholder="Enter banner description"></textarea>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Button Text (Optional)</label>
+                  <input type="text" formControlName="buttonText" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="e.g. Learn More">
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Button Link (Optional)</label>
+                  <input type="url" formControlName="buttonLink" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="e.g. https://example.com">
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-6">
+              <button type="button" (click)="isBannerFormVisible = false" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition">
+                Cancel
+              </button>
+              <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+                Save Banner
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <div *ngIf="activeSection === 'contact'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="font-medium text-gray-700 mb-3">Emergency Contact</h4>
+          <form (ngSubmit)="updateEmergencyContact()" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input type="tel" [(ngModel)]="emergencyPhone" name="emergencyPhone"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Emergency phone number"
+                     placeholder="Enter emergency phone number">
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-gray-700 mb-3">Hospital Location</h4>
+          <form (ngSubmit)="updateHospitalAddress()" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <textarea [(ngModel)]="hospitalAddress" name="hospitalAddress" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        title="Hospital address"
+                        placeholder="Enter hospital address"></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Us Section -->
+    <div *ngIf="activeSection === 'about'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="font-medium text-gray-700">About Us Section</h4>
+          <button (click)="openContentEditor('about')" class="bg-teal-600 text-white px-3 py-1 rounded text-sm">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+        <div class="text-gray-600">
+          <h5 class="font-semibold mb-2">{{ homepageContent.about.title }}</h5>
+          <p>{{ homepageContent.about.content.split('\n')[0] }}</p>
+          <p>{{ homepageContent.about.content.split('\n')[1] }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legacy Section -->
+    <div *ngIf="activeSection === 'legacy'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="font-medium text-gray-700">Legacy Section</h4>
+          <button (click)="openContentEditor('legacy')" class="bg-teal-600 text-white px-3 py-1 rounded text-sm">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+        <div class="text-gray-600">
+          <h5 class="font-semibold mb-2">{{ homepageContent.legacy.title }}</h5>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div *ngFor="let item of homepageContent.legacy.items" class="bg-gray-50 p-4 rounded">
+              <div class="flex items-center mb-2">
+                <i [class]="item.icon + ' text-teal-600 mr-2'"></i>
+                <h6 class="font-medium">{{ item.title }}</h6>
+              </div>
+              <p class="text-sm">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specialties Section -->
+    <div *ngIf="activeSection === 'specialties'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="font-medium text-gray-700">Specialties Section</h4>
+          <button (click)="openContentEditor('specialties')" class="bg-teal-600 text-white px-3 py-1 rounded text-sm">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+        <div class="text-gray-600">
+          <h5 class="font-semibold mb-2">{{ homepageContent.specialties.title }}</h5>
+          <p class="mb-4">{{ homepageContent.specialties.intro }}</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div *ngFor="let item of homepageContent.specialties.items" class="border border-gray-200 p-4 rounded">
+              <div class="text-teal-600 mb-2">
+                <i [class]="item.icon + ' text-2xl'"></i>
+              </div>
+              <h6 class="font-medium mb-2">{{ item.title }}</h6>
+              <p class="text-sm">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Find Doctor Section -->
+    <div *ngIf="activeSection === 'find-doctor'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="font-medium text-gray-700">Find Doctor Section</h4>
+          <button (click)="openContentEditor('find-doctor')" class="bg-teal-600 text-white px-3 py-1 rounded text-sm">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+        <div class="text-gray-600">
+          <h5 class="font-semibold mb-2">{{ homepageContent.findDoctor.title }}</h5>
+          <p class="mb-2">{{ homepageContent.findDoctor.subtitle }}</p>
+          <p class="mb-4">{{ homepageContent.findDoctor.description }}</p>
+          <button class="bg-teal-600 text-white px-4 py-2 rounded">{{ homepageContent.findDoctor.buttonText }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Section -->
+    <div *ngIf="activeSection === 'feedback'" class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="font-medium text-gray-700">Feedback Section</h4>
+          <button (click)="openContentEditor('feedback')" class="bg-teal-600 text-white px-3 py-1 rounded text-sm">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+        <div class="text-gray-600">
+          <div class="h-64 overflow-hidden rounded-lg mb-4">
+            <img [src]="homepageContent.feedback.imageUrl" alt="Feedback Section" class="w-full h-full object-cover">
+          </div>
+          <button (click)="triggerFileInput('feedback-image')" class="bg-teal-600 text-white px-4 py-2 rounded">
+            <i class="fas fa-image mr-2"></i>Change Image
+          </button>
+          <input type="file" id="feedback-image" class="hidden" accept="image/*"
+                 (change)="onFileSelected($event, 'feedback')"
+                 title="Upload feedback image"
+                 aria-label="Upload feedback image">
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Editor Modal -->
+    <div *ngIf="isContentEditorVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-lg font-semibold">Edit {{ currentEditingSection.replace('-', ' ') | titlecase }} Section</h3>
+          <button (click)="isContentEditorVisible = false" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="p-4">
+          <!-- About Us Editor -->
+          <div *ngIf="currentEditingSection === 'about'">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+              <input type="text" [(ngModel)]="homepageContent.about.title"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="About section title"
+                     placeholder="Enter about section title">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+              <textarea [(ngModel)]="homepageContent.about.content" rows="10"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        title="About section content"
+                        placeholder="Enter about section content"></textarea>
+            </div>
+          </div>
+
+          <!-- Legacy Editor -->
+          <div *ngIf="currentEditingSection === 'legacy'">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+              <input type="text" [(ngModel)]="homepageContent.legacy.title"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Legacy section title"
+                     placeholder="Enter legacy section title">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Legacy Items</label>
+              <div class="space-y-4">
+                <div *ngFor="let item of homepageContent.legacy.items; let i = index" class="border border-gray-200 p-4 rounded">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Icon Class</label>
+                      <input type="text" [(ngModel)]="item.icon"
+                             class="w-full px-3 py-2 border border-gray-300 rounded"
+                             title="Icon class for legacy item"
+                             placeholder="e.g. fas fa-heart">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <input type="text" [(ngModel)]="item.title"
+                             class="w-full px-3 py-2 border border-gray-300 rounded"
+                             title="Title for legacy item"
+                             placeholder="Enter title">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <input type="text" [(ngModel)]="item.description"
+                             class="w-full px-3 py-2 border border-gray-300 rounded"
+                             title="Description for legacy item"
+                             placeholder="Enter description">
+                    </div>
+                  </div>
+                  <button (click)="homepageContent.legacy.items.splice(i, 1)" class="bg-red-100 text-red-600 px-2 py-1 rounded text-sm mt-2">
+                    <i class="fas fa-trash mr-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+              <button (click)="homepageContent.legacy.items.push({icon: '', title: '', description: ''})" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm mt-2">
+                <i class="fas fa-plus mr-1"></i>Add Legacy Item
+              </button>
+            </div>
+          </div>
+
+          <!-- Specialties Editor -->
+          <div *ngIf="currentEditingSection === 'specialties'">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+              <input type="text" [(ngModel)]="homepageContent.specialties.title"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Specialties section title"
+                     placeholder="Enter specialties section title">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Introduction Text</label>
+              <textarea [(ngModel)]="homepageContent.specialties.intro" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        title="Specialties introduction text"
+                        placeholder="Enter introduction text for specialties section"></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Specialty Items</label>
+              <div class="space-y-4">
+                <div *ngFor="let item of homepageContent.specialties.items; let i = index" class="border border-gray-200 p-4 rounded">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Icon Class</label>
+                      <input type="text" [(ngModel)]="item.icon"
+                             class="w-full px-3 py-2 border border-gray-300 rounded"
+                             title="Icon class for specialty"
+                             placeholder="e.g. fas fa-stethoscope">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <input type="text" [(ngModel)]="item.title"
+                             class="w-full px-3 py-2 border border-gray-300 rounded"
+                             title="Title for specialty"
+                             placeholder="Enter specialty title">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea [(ngModel)]="item.description" rows="2"
+                                class="w-full px-3 py-2 border border-gray-300 rounded"
+                                title="Description for specialty"
+                                placeholder="Enter specialty description"></textarea>
+                    </div>
+                  </div>
+                  <button (click)="homepageContent.specialties.items.splice(i, 1)" class="bg-red-100 text-red-600 px-2 py-1 rounded text-sm mt-2">
+                    <i class="fas fa-trash mr-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+              <button (click)="homepageContent.specialties.items.push({icon: '', title: '', description: ''})" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm mt-2">
+                <i class="fas fa-plus mr-1"></i>Add Specialty Item
+              </button>
+            </div>
+          </div>
+
+          <!-- Find Doctor Editor -->
+          <div *ngIf="currentEditingSection === 'find-doctor'">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+              <input type="text" [(ngModel)]="homepageContent.findDoctor.title"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Find doctor section title"
+                     placeholder="Enter find doctor section title">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+              <input type="text" [(ngModel)]="homepageContent.findDoctor.subtitle"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Find doctor section subtitle"
+                     placeholder="Enter find doctor section subtitle">
+            </div>
+
+           <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea [(ngModel)]="homepageContent.findDoctor.description" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        title="Find doctor section description"
+                        placeholder="Enter find doctor section description"></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+              <input type="text" [(ngModel)]="homepageContent.findDoctor.buttonText"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                     title="Find doctor button text"
+                     placeholder="Enter button text">
+            </div>
+          </div>
+
+          <!-- Feedback Editor -->
+          <div *ngIf="currentEditingSection === 'feedback'">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Feedback Image</label>
+              <div class="h-48 bg-gray-100 mb-2 rounded-lg overflow-hidden flex items-center justify-center">
+                <img *ngIf="homepageContent.feedback.imageUrl" [src]="homepageContent.feedback.imageUrl" class="w-full h-full object-cover">
+                <div *ngIf="!homepageContent.feedback.imageUrl" class="text-gray-400">Preview will appear here</div>
+              </div>
+              <input type="file" id="feedback-image-edit" class="hidden" accept="image/*"
+                     (change)="onFileSelected($event, 'feedback')"
+                     title="Upload feedback image"
+                     aria-label="Upload feedback image">
+              <button type="button" (click)="triggerFileInput('feedback-image-edit')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition w-full">
+                <i class="fas fa-upload mr-2"></i>Upload Image
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-6">
+            <button type="button" (click)="isContentEditorVisible = false" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition">
+              Cancel
+            </button>
+            <button type="button" (click)="saveContent()" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

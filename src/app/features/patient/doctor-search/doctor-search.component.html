@@ -1,0 +1,781 @@
+<!-- Doctor Search Component -->
+<div class="bg-gray-50 min-h-screen">
+  <!-- Hero Section -->
+  <div class="bg-teal-50 p-6 mb-8">
+    <h2 class="text-2xl font-bold text-teal-800 mb-2">Connect with Trusted Healthcare Experts</h2>
+    <p class="text-gray-700 mb-4">Find the right specialist for personalized care tailored to your needs.</p>
+
+    <div class="relative max-w-md">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        (keyup.enter)="applyFilters()"
+        placeholder="Search Doctor..."
+        class="w-full p-4 pl-12 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500">
+      <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+      <button
+        *ngIf="searchQuery.trim()"
+        (click)="searchQuery = ''; onSearch()"
+        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Appointments Section -->
+  <div class="mb-8 px-6" *ngIf="recentDoctors.length > 0">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Appointments</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let doctor of recentDoctors" class="bg-white rounded-lg shadow-sm p-4 doctor-card hover:shadow-md transition-shadow">
+        <div class="flex items-start">
+          <div class="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mr-3">
+            <i class="fas fa-user-md text-xl text-teal-700"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-gray-800">{{doctor.name}}</h4>
+            <p class="text-sm text-gray-600 mb-1">{{doctor.experience}}</p>
+            <p class="text-xs text-gray-700 mb-1">
+              <i class="fas fa-graduation-cap text-teal-700 mr-1"></i>
+              {{doctor.qualification}} | {{doctor.specialization}}
+            </p>
+            <p class="text-xs text-gray-700">
+              <i class="fas fa-language text-teal-700 mr-1"></i>
+              {{doctor.languages?.join(', ') || 'English'}} | {{doctor.location || 'Healthcare Center'}}
+            </p>
+            <div class="mt-2 flex justify-between items-center">
+              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
+                <i class="fas fa-history mr-1"></i> Recent Doctor
+              </span>
+              <button
+                (click)="bookAppointment(doctor)"
+                class="bg-teal-700 text-white px-3 py-1 rounded text-xs hover:bg-teal-800 transition-colors">
+                Book Appointment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <!-- Filters Section -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Filters</h3>
+
+          <div class="space-y-4">
+            <!-- Date Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Appointment Date</label>
+              <input
+                type="date"
+                [(ngModel)]="selectedDate"
+                (change)="onDateChange()"
+                [min]="minDate"
+                [max]="maxDate"
+                class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+            </div>
+
+            <!-- Specialist Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Specialists</label>
+              <select
+                [(ngModel)]="selectedCategory"
+                (change)="onFilterChange()"
+                title="Select specialist category"
+                class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">All Specialties</option>
+                <option *ngFor="let category of categories" [value]="category.name">{{category.name}}</option>
+              </select>
+            </div>
+
+            <!-- Gender Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+              <select
+                [(ngModel)]="selectedGender"
+                (change)="onFilterChange()"
+                title="Select doctor gender preference"
+                class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Any Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <!-- Language Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+              <select
+                [(ngModel)]="selectedLanguage"
+                (change)="onFilterChange()"
+                title="Select preferred language"
+                class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Any Language</option>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="Hindi">Hindi</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <button
+                (click)="applyFilters()"
+                class="w-full bg-teal-700 text-white py-2 px-4 rounded hover:bg-teal-800 transition-colors">
+                Apply Filters
+              </button>
+
+              <button
+                (click)="resetFilters()"
+                class="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors">
+                Reset Filters
+              </button>
+
+              <button
+                (click)="refreshAllVisibleSlots()"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
+                <i class="fas fa-sync mr-2"></i>Refresh Slots
+              </button>
+<!--
+              <button
+                (click)="clearAllFilters()"
+                class="w-full bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 transition-colors text-sm">
+                Clear All
+              </button> -->
+
+              <!-- <button
+                (click)="debugData()"
+                class="w-full bg-purple-500 text-white py-1 px-4 rounded hover:bg-purple-600 transition-colors text-sm">
+                Debug Data
+              </button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctors List -->
+      <div class="lg:col-span-3">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">Available Doctors</h3>
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-600">{{filteredDoctors.length}} doctors found</span>              <button
+                (click)="refreshData()"
+                class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
+                title="Refresh doctor data">
+                <i class="fas fa-sync-alt mr-1"></i> Refresh
+              </button>
+
+
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="space-y-4">
+          <div *ngFor="let i of [1,2,3]" class="bg-white rounded-lg shadow-sm p-6 animate-pulse">
+            <div class="flex items-start">
+              <div class="w-20 h-20 bg-gray-300 rounded-full mr-4"></div>
+              <div class="flex-1">
+                <div class="h-6 bg-gray-300 rounded mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-300 rounded mb-2 w-1/2"></div>
+                <div class="h-4 bg-gray-300 rounded mb-2 w-2/3"></div>
+                <div class="h-4 bg-gray-300 rounded w-1/3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctors List -->
+        <div *ngIf="!isLoading" class="space-y-4">
+          <div *ngFor="let doctor of filteredDoctors"
+               class="bg-white rounded-lg shadow-sm p-6 doctor-card hover:shadow-md transition-all"
+               [attr.data-doctor-id]="doctor.id">
+            <div class="flex items-start">
+              <div class="w-20 h-20 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden mr-4">
+                <img *ngIf="doctor.profileImage" [src]="doctor.profileImage" alt="Doctor Image" class="w-20 h-20 object-cover rounded-full" />
+                <i *ngIf="!doctor.profileImage" class="fas fa-user-md text-3xl text-teal-700"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <h4 class="text-xl font-bold text-gray-800">Dr. {{doctor.name}}</h4>
+                      <button
+                        (click)="viewDoctorProfile(doctor)"
+                        class="text-teal-600 hover:text-teal-800 text-sm">
+                        <i class="fas fa-eye mr-1"></i> View Profile
+                      </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="flex text-yellow-400">
+                        <i *ngFor="let star of getRatingStars(doctor.rating || 4.5)" [class]="star"></i>
+                      </div>
+                      <span class="text-sm text-gray-600">{{doctor.rating || 4.5}} ({{doctor.totalReviews || 50}} reviews)</span>
+                    </div>
+
+                    <p class="text-gray-600 mb-2">{{doctor.experience}}</p>
+                    <p class="text-sm text-gray-700 mb-1">
+                      <i class="fas fa-graduation-cap text-teal-700 mr-1"></i>
+                      {{doctor.qualification}} | {{doctor.specialization}}
+                    </p>
+                    <p class="text-sm text-gray-700 mb-1">
+                      <i class="fas fa-language text-teal-700 mr-1"></i>
+                      {{doctor.languages?.join(', ') || 'English'}} | {{doctor.location || 'Healthcare Center'}}
+                    </p>
+                    <!-- <p class="text-sm text-gray-700">
+                      <i class="fas fa-dollar-sign text-teal-700 mr-1"></i>
+                      Consultation Fee: ${{doctor.consultationFee}}
+                    </p> -->
+
+                    <!-- Available Slots Indicator -->
+                    <div *ngIf="selectedDate" class="mt-2">
+                      <span
+                        *ngIf="checkDoctorHasAvailableSlots(doctor.id)"
+                        class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                        <i class="fas fa-check-circle mr-1"></i> Available on {{selectedDate}}
+                      </span>
+                      <span
+                        *ngIf="!checkDoctorHasAvailableSlots(doctor.id)"
+                        class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full">
+                        <i class="fas fa-times-circle mr-1"></i> Not Available on {{selectedDate}}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <button
+                      (click)="bookAppointment(doctor)"
+                      [disabled]="!checkDoctorHasAvailableSlots(doctor.id)"
+                      [class]="checkDoctorHasAvailableSlots(doctor.id) ?
+                               'bg-teal-700 text-white px-4 py-2 rounded text-sm hover:bg-teal-800 transition-colors' :
+                               'bg-gray-400 text-white px-4 py-2 rounded text-sm cursor-not-allowed'">
+                      <i class="fas fa-calendar-plus mr-1"></i>
+                      {{ checkDoctorHasAvailableSlots(doctor.id) ? 'Book Appointment' : 'No Slots Available' }}
+                    </button>
+
+                    <!-- View Available Slots Button -->
+                    <button
+                      (click)="toggleDoctorSlots(doctor)"
+                      class="bg-white text-teal-600 border-2 border-teal-600 px-4 py-2 rounded text-sm hover:bg-teal-600 transition-colors hover:text-white">
+                      <i class="fas" [ngClass]="areSlotsVisible(doctor.id) ? 'fa-eye-slash' : 'fa-eye'" class="mr-1"></i>
+                      {{areSlotsVisible(doctor.id) ? 'Hide Slots' : 'View Available Slots'}}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Available Slots Section -->
+                <div *ngIf="areSlotsVisible(doctor.id)" class="mt-4 border-t pt-4">
+                  <h5 class="font-semibold text-gray-800 mb-3">
+                    Available Slots for {{selectedDate || 'Today'}}
+                  </h5>
+
+                  <!-- Loading State -->
+                  <div *ngIf="areSlotsLoading(doctor.id)" class="flex items-center justify-center py-4">
+                    <i class="fas fa-spinner fa-spin text-teal-700 mr-2"></i>
+                    <span class="text-gray-600">Loading slots...</span>
+                  </div>
+
+                  <!-- Slots Display -->
+                  <div *ngIf="!areSlotsLoading(doctor.id)" class="space-y-2">
+                    <!-- No Slots Available -->
+                    <div *ngIf="getDoctorSlots(doctor.id).length === 0" class="text-center py-4">
+                      <i class="fas fa-calendar-times text-red-500 text-2xl mb-2"></i>
+                      <p class="text-red-600 font-medium">No slots available for this date</p>
+                      <p class="text-gray-500 text-sm">Please select a different date</p>
+                    </div>
+
+                    <!-- Slots List -->
+                    <div *ngIf="getDoctorSlots(doctor.id).length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div *ngFor="let slot of getDoctorSlots(doctor.id)"
+                           class="border rounded-lg p-3 transition-all hover:shadow-md"
+                           [ngClass]="slot.statusClass">
+                        <div class="flex justify-between items-center">
+                          <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                              <i class="fas fa-clock text-sm"></i>
+                              <span class="font-medium">{{formatTime(slot.startTime)}} - {{formatTime(slot.endTime)}}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-sm">
+                              <i class="fas fa-users"></i>
+                              <span>{{slot.bookedCount}}/{{slot.maxPatients}} booked</span>
+                            </div>
+
+                            <div class="mt-1">
+                              <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="slot.statusClass">
+                                {{slot.statusText}}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div class="ml-3">
+                            <button
+                              *ngIf="!slot.isFullyBooked"
+                              (click)="bookSlot(doctor, slot)"
+                              class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition-colors">
+                              <i class="fas fa-plus mr-1"></i>Book
+                            </button>
+
+                            <span
+                              *ngIf="slot.isFullyBooked"
+                              class="bg-red-500 text-white px-3 py-1 rounded text-xs cursor-not-allowed opacity-75">
+                              <i class="fas fa-times mr-1"></i>Full
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Refresh Button -->
+                    <div class="text-center mt-4">
+                      <button
+                        (click)="loadDoctorSlots(doctor)"
+                        class="bg-gray-500 text-white px-3 py-1 rounded text-xs hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-sync-alt mr-1"></i>Refresh Slots
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div *ngIf="!isLoading && filteredDoctors.length === 0" class="text-center py-12">
+          <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+          <p class="text-gray-500 mb-2">No doctors found</p>
+          <p class="text-gray-400 text-sm">Try adjusting your search criteria</p>
+        </div>
+
+        <!-- Reschedule Appointment Button (for demonstration, place below doctor list) -->
+        <div class="mt-8 text-center">
+          <button
+            class="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600 transition-colors"
+            (click)="openRescheduleModal()">
+            <i class="fas fa-calendar-alt mr-2"></i>Request Appointment Reschedule
+          </button>
+        </div>
+
+        <!-- Reschedule Modal -->
+        <div *ngIf="showRescheduleModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Request Appointment Reschedule</h3>
+                <button (click)="closeRescheduleModal()" class="text-gray-500 hover:text-gray-700">
+                  <i class="fas fa-times text-xl"></i>
+                </button>
+              </div>
+              <form (ngSubmit)="submitRescheduleRequest()">
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Select New Date</label>
+                  <input
+                    type="date"
+                    [(ngModel)]="rescheduleForm.newDate"
+                    name="newDate"
+                    [min]="minDate"
+                    [max]="maxDate"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    required>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Select New Time Slot</label>
+                  <select
+                    [(ngModel)]="rescheduleForm.newSlot"
+                    name="newSlot"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    required>
+                    <option value="" disabled>Select a slot</option>
+                    <option *ngFor="let slot of availableSlotsForReschedule" [value]="slot.id">
+                      {{formatTime(slot.startTime)}} - {{formatTime(slot.endTime)}}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Reason for Reschedule</label>
+                  <textarea
+                    [(ngModel)]="rescheduleForm.reason"
+                    name="reason"
+                    rows="3"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="Please provide a reason..."
+                    required></textarea>
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button type="button" (click)="closeRescheduleModal()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Cancel</button>
+                  <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">Submit Request</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor Profile Modal -->
+<div *ngIf="showDoctorProfile" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-gray-800">Doctor Profile</h3>
+        <button (click)="closeDoctorProfile()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div *ngIf="selectedDoctor" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Doctor Info -->
+        <div class="lg:col-span-1">
+          <div class="text-center mb-6">
+            <!-- <div class="w-32 h-32 rounded-full bg-teal-100 flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-user-md text-4xl text-teal-700"></i>
+            </div> -->
+             <div class="w-32 h-32 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden mx-auto">
+                <img *ngIf="selectedDoctor.profileImage" [src]="selectedDoctor.profileImage" alt="Doctor Image" class="w-32 h-32 object-cover rounded-full" />
+                <i *ngIf="!selectedDoctor.profileImage" class="fas fa-user-md text-3xl text-teal-700"></i>
+              </div>
+            <h4 class="text-xl font-bold text-gray-800 ">{{selectedDoctor.name}}</h4>
+            <p class="text-gray-600">{{selectedDoctor.specialization}}</p>
+
+            <div class="flex justify-center items-center gap-2 mt-2">
+              <div class="flex text-yellow-400">
+                <i *ngFor="let star of getRatingStars(selectedDoctor.rating || 4.5)" [class]="star"></i>
+              </div>
+              <span class="text-sm text-gray-600">{{selectedDoctor.rating || 4.5}} ({{selectedDoctor.totalReviews || 50}} reviews)</span>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Experience</h5>
+              <p class="text-gray-600">{{selectedDoctor.experience}}</p>
+            </div>
+
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Qualifications</h5>
+              <p class="text-gray-600">{{selectedDoctor.qualification}}</p>
+            </div>
+
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Languages</h5>
+              <p class="text-gray-600">{{selectedDoctor.languages?.join(', ') || 'English'}}</p>
+            </div>
+
+            <div>
+              <h5 class="font-semibold text-gray-800 mb-2">Location</h5>
+              <p class="text-gray-600">{{selectedDoctor.location}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="lg:col-span-2">
+          <h5 class="font-semibold text-gray-800 mb-4">Available Slots</h5>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+            <input
+              type="date"
+              [(ngModel)]="selectedDate"
+              (change)="updateAvailableSlots()"
+              [min]="minDate"
+              [max]="maxDate"
+              class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+          </div>
+
+          <div *ngIf="isLoadingSchedule" class="flex justify-center py-8">
+            <i class="fas fa-spinner fa-spin text-2xl text-teal-600"></i>
+          </div>
+
+          <div *ngIf="!isLoadingSchedule">
+            <div *ngIf="availableSlots.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <button
+                *ngFor="let slot of availableSlots"
+                (click)="bookSpecificSlot(selectedDoctor, slot)"
+                class="p-3 border border-gray-300 rounded-lg text-center hover:border-teal-500 hover:bg-teal-50 transition-colors">
+                <div class="font-medium">{{formatTime(slot.startTime)}} - {{formatTime(slot.endTime)}}</div>
+                <div class="text-xs text-gray-600">{{getSlotAvailabilityText(slot)}}</div>
+                <div class="mt-2">
+                  <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded-full">
+                    <i class="fas fa-plus mr-1"></i>Book
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            <div *ngIf="availableSlots.length === 0" class="text-center py-8">
+              <i class="fas fa-calendar-times text-gray-400 text-3xl mb-4"></i>
+              <p class="text-gray-500">No available slots for this date</p>
+              <p class="text-gray-400 text-sm">Please select a different date</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div *ngIf="showBookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 booking-modal">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg booking-modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-teal-500 to-teal-900 rounded-full flex items-center justify-center">
+            <i class="fas fa-calendar-check text-white text-lg"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-gray-900">Book Appointment</h3>
+            <p class="text-sm text-gray-500">Confirm your appointment details</p>
+          </div>
+        </div>
+        <button (click)="closeBookingModal()" class="modal-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- Doctor Information Card -->
+      <div *ngIf="selectedDoctor" class="doctor-info-card">
+        <div class="flex items-center space-x-4">
+          <div class="doctor-avatar">
+            <img *ngIf="selectedDoctor.profileImage" [src]="selectedDoctor.profileImage" [alt]="selectedDoctor.name" class="w-full h-full object-cover">
+            <i *ngIf="!selectedDoctor.profileImage" class="fas fa-user-md text-white text-2xl"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-teal-200 text-lg">Dr. {{selectedDoctor.name}}</h4>
+            <p class="text-white font-medium">{{selectedDoctor.specialization}}</p>
+            <p class="text-sm text-gray-200">{{selectedDoctor.experience}} years experience</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pre-appointment Details -->
+      <div class="pre-appointment-details">
+        <!-- Selected Slot Display -->
+        <div *ngIf="bookingForm.selectedSlot" class="appointment-details-card">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-clock text-teal-600"></i>
+            </div>
+            <h5 class="font-semibold text-gray-900">Appointment Details</h5>
+          </div>
+          <div class="appointment-time">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">Date & Time:</span>
+              <span class="font-semibold text-gray-900">{{selectedDate}} at {{formatTime(bookingForm.selectedSlot.startTime)}}</span>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <span class="text-gray-600">Duration:</span>
+              <span class="font-medium text-gray-700">{{formatTime(bookingForm.selectedSlot.startTime)}} - {{formatTime(bookingForm.selectedSlot.endTime)}}</span>
+            </div>
+            <div class="availability-badge">
+              {{getSlotAvailabilityText(bookingForm.selectedSlot)}}
+            </div>
+          </div>
+        </div>
+
+        <form (ngSubmit)="confirmBooking()" class="booking-form">
+          <!-- Slot Selection (if not pre-selected) -->
+          <div *ngIf="!bookingForm.selectedSlot" class="form-section">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                Appointment Date
+              </label>
+              <input
+                type="date"
+                [(ngModel)]="selectedDate"
+                name="appointmentDate"
+                (change)="updateAvailableSlots()"
+                [min]="minDate"
+                [max]="maxDate"
+                class="form-input"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-clock mr-2"></i>
+                Available Time Slots
+              </label>
+              <div *ngIf="availableSlots.length > 0" class="slots-grid">
+                <button
+                  *ngFor="let slot of availableSlots"
+                  type="button"
+                  (click)="selectSlot(slot)"
+                  [class]="'slot-btn ' + (bookingForm.selectedSlot?.id === slot.id ? 'slot-btn-selected' : 'slot-btn-default')">
+                  {{formatTime(slot.startTime)}}
+                </button>
+              </div>
+              <div *ngIf="availableSlots.length === 0" class="no-slots-message">
+                <i class="fas fa-info-circle mr-2"></i>
+                No slots available for selected date
+              </div>
+            </div>
+          </div>
+
+          <!-- Purpose of Visit -->
+          <div class="form-section">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-stethoscope mr-2"></i>
+                Purpose of Visit *
+              </label>
+              <textarea
+                [(ngModel)]="bookingForm.purpose"
+                name="purpose"
+                rows="3"
+                placeholder="Please describe the reason for your visit, symptoms, or concerns..."
+                class="form-textarea"
+                required></textarea>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="form-section">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-notes-medical mr-2"></i>
+                Additional Notes
+              </label>
+              <textarea
+                [(ngModel)]="bookingForm.notes"
+                name="notes"
+                rows="2"
+                placeholder="Any additional information, medications, or special requirements..."
+                class="form-textarea"></textarea>
+            </div>
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="modal-actions">
+            <button
+              type="button"
+              (click)="closeBookingModal()"
+              class="btn-cancel">
+              <i class="fas fa-times mr-2"></i>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="!bookingForm.selectedSlot || !bookingForm.purpose.trim()"
+              class="btn-confirm">
+              <i class="fas fa-check-circle mr-2"></i>
+              Confirm Appointment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div *ngIf="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 confirmation-modal">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md confirmation-modal-content">
+    <!-- Modal Header -->
+    <div class="confirmation-header">
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-900">{{ confirmationData?.title || 'Confirm Action' }}</h3>
+          <p class="text-sm text-gray-500">Please review the details below</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="confirmation-body">
+      <div *ngIf="confirmationData?.type === 'booking'" class="booking-confirmation-details">
+        <div class="confirmation-card">
+          <h4 class="confirmation-section-title">
+            <i class="fas fa-calendar-check mr-2"></i>
+            Appointment Details
+          </h4>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="fas fa-calendar mr-2 text-teal-600"></i>
+              Date:
+            </div>
+            <div class="detail-value">{{ confirmationData.date }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="fas fa-clock mr-2 text-teal-600"></i>
+              Time:
+            </div>
+            <div class="detail-value">{{ confirmationData.time }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="fas fa-user-md mr-2 text-teal-600"></i>
+              Doctor:
+            </div>
+            <div class="detail-value">Dr. {{ confirmationData.doctor }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="fas fa-stethoscope mr-2 text-teal-600"></i>
+              Purpose:
+            </div>
+            <div class="detail-value">{{ confirmationData.purpose }}</div>
+          </div>
+
+          <div *ngIf="confirmationData.notes" class="detail-row">
+            <div class="detail-label">
+              <i class="fas fa-notes-medical mr-2 text-teal-600"></i>
+              Notes:
+            </div>
+            <div class="detail-value">{{ confirmationData.notes }}</div>
+          </div>
+        </div>
+
+        <div class="confirmation-warning mt-5">
+          <div class="flex items-start space-x-3">
+            <i class="fas fa-info-circle text-amber-600 text-lg mt-1"></i>
+            <div>
+              <p class="text-sm text-gray-700">
+                <strong>Please make sure to confirm the appointment.</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="confirmation-actions">
+      <button
+        type="button"
+        (click)="onCancelAction()"
+        class="btn-cancel-confirm">
+        <i class="fas fa-times mr-2"></i>
+        Go Back
+      </button>
+      <button
+        type="button"
+        (click)="onConfirmAction()"
+        class="btn-confirm-confirm">
+        <i class="fas fa-check-circle mr-2"></i>
+        Yes, Book Appointment
+      </button>
+    </div>
+  </div>
+</div>

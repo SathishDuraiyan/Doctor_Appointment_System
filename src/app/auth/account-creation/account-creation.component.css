@@ -1,0 +1,63 @@
+/* Account Creation Component Styles */
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast animation */
+.animate-slide-in {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon animations */
+.fas {
+  transition: transform 0.2s ease-in-out;
+}
+
+button:hover .fas {
+  transform: scale(1.1);
+}
+
+/* Custom gradient backgrounds */
+.bg-gradient-custom {
+  background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .max-w-md {
+    margin: 1rem;
+  }
+}

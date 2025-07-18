@@ -1,0 +1,84 @@
+<!-- department-card.component.html -->
+<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h2 class="text-2xl sm:text-2xl lg:text-2xl  text-gray-900 mb-4 font-title font-bold">
+        OUR SPECIALTIES
+      </h2>
+      <p class="text-[18px] sm:text-[18px] text-gray-600 max-w-6xl mx-auto leading-relaxed">
+        StreamHawkX Hospital offers a comprehensive range of medical specialties with cutting-edge technology
+        and world-class healthcare professionals. Experience excellence in every aspect of your healthcare journey.
+      </p>
+    </div>
+
+    <!-- Department Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 mb-12">
+      @for (dept of departments; track dept.id) {
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden group cursor-pointer">
+          <div class="p-6">
+            <!-- Icon Container -->
+            <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br {{dept.gradientFrom}} {{dept.gradientTo}} rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <i class="{{dept.iconClass}} text-white text-xl"></i>
+            </div>
+
+            <!-- Title -->
+            <h3 class="text-xl font-bold text-gray-900 mb-3 font-body">
+              {{dept.title}}
+            </h3>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-4 font-body">
+              {{dept.description}}
+            </p>
+
+            <!-- Action Section -->
+            <div class="flex items-center justify-between">
+              <button
+                class="border-2 text-black px-4 py-2 rounded-lg text-sm font-medium {{dept.hoverColor}} transition-colors hover:text-white duration-300 flex items-center group-hover:shadow-md"
+              >
+                Learn More
+                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+              </button>
+
+              <div class="{{dept.textColor}} opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <i class="{{dept.secondaryIcon}} text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Border -->
+          <div class="h-1 bg-gradient-to-r {{dept.gradientFrom}} {{dept.gradientTo}}"></div>
+        </div>
+      }
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-6 sm:p-8 lg:p-12 text-center text-white shadow-2xl">
+      <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+        Need Medical Assistance?
+      </h3>
+      <p class="text-lg sm:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+        Our medical experts are available 24/7 to provide you with the best healthcare services.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a
+          href="#"
+          class="bg-white text-teal-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center min-w-48"
+        >
+          <i class="fas fa-phone mr-2"></i>
+          Emergency: 999-999-1234
+        </a>
+
+        <a
+          href="#"
+          class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600 transition-colors duration-300 flex items-center justify-center min-w-48"
+        >
+          <i class="fas fa-calendar-alt mr-2"></i>
+          Book Appointment
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

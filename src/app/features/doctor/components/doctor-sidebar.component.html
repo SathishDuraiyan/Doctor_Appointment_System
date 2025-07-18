@@ -1,0 +1,74 @@
+<!-- Doctor Sidebar -->
+<div class="w-64 bg-teal-800 text-white h-screen fixed">
+  <div class="p-4 bg-teal-800 flex items-center space-x-4 cursor-pointer" routerLink="/doctor/profile">
+    <div class="w-12 h-12 rounded-full bg-white overflow-hidden flex items-center justify-center">
+      <i class="fas fa-user-md text-3xl text-teal-900"></i>
+    </div>
+    <div>
+      <h2 class="font-semibold">{{ getDisplayName() }}</h2>
+      <p class="text-xs text-cyan-100">{{currentUser?.email || 'doctor@example.com'}}</p>
+    </div>
+  </div>
+
+  <div class="p-2">
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/dashboard"
+         routerLinkActive="active">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/appointments"
+         routerLinkActive="active">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Appointments</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/records"
+         routerLinkActive="active">
+      <i class="fas fa-file-medical-alt"></i>
+      <span>Records</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/schedule"
+         routerLinkActive="active">
+      <i class="fas fa-calendar-check"></i>
+      <span>Schedule</span>
+    </div>
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/patients"
+         routerLinkActive="active">
+      <i class="fas fa-users"></i>
+      <span>Patient Management</span>
+    </div>
+  </div>
+
+  <div class="absolute bottom-0 w-64 p-2">
+    <div class="sidebar-item p-3 mb-1 rounded flex items-center space-x-3"
+         routerLink="/doctor/help"
+         routerLinkActive="active">
+      <i class="fas fa-question-circle"></i>
+      <span>Help Center</span>
+    </div>
+    <div class="cursor-pointer flex items-center justify-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20 mb-2" (click)="openLogoutModal()">
+      <span>Logout</span>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div *ngIf="showLogoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold text-gray-800">Confirm Logout</h3>
+      <button (click)="closeLogoutModal()" class="text-gray-400 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <p class="mb-6 text-gray-700">Are you sure you want to logout?</p>
+    <div class="flex justify-end gap-3">
+      <button (click)="closeLogoutModal()" class="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300">Cancel</button>
+      <button (click)="confirmLogout()" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Logout</button>
+    </div>
+  </div>
+</div>

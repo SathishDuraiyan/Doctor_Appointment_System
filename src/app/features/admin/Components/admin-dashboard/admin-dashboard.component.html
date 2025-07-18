@@ -1,0 +1,399 @@
+<!-- admin-dashboard.component.html -->
+<div class="font-body">
+  <div class="bg-white p-4 flex justify-between items-center shadow-sm">
+    <div class="flex items-center space-x-4">
+      <div class="flex flex-col space-x-2 text-2xl">
+        <h1 class="font-bold font-body">Welcome Back,Admin!</h1>
+        <p class="text-[12px] text-gray-500 font-body">Here's what's happening with your healthcare today.</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <div class="flex">
+        <button class="bg-teal-800 text-white px-4 py-1 rounded-l border border-teal-800 font-body" (click)="searchDoctors()">
+          Search
+        </button>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search doctor name or email"
+               class="border border-gray-300 rounded-r py-1 px-4 w-96 focus:outline-none focus:ring-1 focus:ring-teal-500 placeholder-gray-500 font-body"
+               (keyup.enter)="searchDoctors()">
+      </div>
+      <span class="text-sm text-gray-600 pl-4 font-body">Today's Date</span>
+      <span class="text-sm font-semibold font-body">{{ currentDate | date:'dd/MM/yyyy' }}</span>
+      <div class="w-6 h-6 flex items-center justify-center">
+        <i class="fas fa-calendar-alt text-gray-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-6">
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+        <div class="flex items-center space-x-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1 font-body">Date Range</label>
+            <div class="flex space-x-2">
+              <input type="date" [(ngModel)]="startDate" class="border border-gray-300 rounded px-3 py-1 text-sm font-body"
+                     title="Start Date" (change)="filterData()">
+              <span class="flex items-center font-body">to</span>
+              <input type="date" [(ngModel)]="endDate" class="border border-gray-300 rounded px-3 py-1 text-sm font-body"
+                     title="End Date" (change)="filterData()">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1 font-body">Department</label>
+            <select [(ngModel)]="selectedDepartment" class="border border-gray-300 rounded px-3 py-1 text-sm font-body"
+                    title="Select Department" (change)="filterData()">
+              <option value="" class="font-body">All Departments</option>
+              <option *ngFor="let dept of departments" [value]="dept" class="font-body">{{dept}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500 font-body">Total Appointments</p>
+            <h3 class="text-2xl font-bold font-body">{{ totalAppointments }}</h3>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <i class="fas fa-calendar-check text-blue-600"></i>
+          </div>
+        </div>
+        <p class="text-xs text-green-600 mt-2 font-body"><i class="fas fa-arrow-up mr-1"></i> 12% from last week</p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500 font-body">Pending</p>
+            <h3 class="text-2xl font-bold font-body">{{ pendingAppointments }}</h3>
+          </div>
+          <div class="bg-yellow-100 p-3 rounded-full">
+            <i class="fas fa-hourglass-half text-yellow-600"></i>
+          </div>
+        </div>
+        <p class="text-xs text-red-600 mt-2 font-body"><i class="fas fa-arrow-down mr-1"></i> 3% from last week</p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500 font-body">Confirmed</p>
+            <h3 class="text-2xl font-bold font-body">{{ confirmedAppointments }}</h3>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <i class="fas fa-check-circle text-green-600"></i>
+          </div>
+        </div>
+        <p class="text-xs text-green-600 mt-2 font-body"><i class="fas fa-arrow-up mr-1"></i> 8% from last week</p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm text-gray-500 font-body">Cancelled</p>
+            <h3 class="text-2xl font-bold font-body">{{ cancelledAppointments }}</h3>
+          </div>
+          <div class="bg-red-100 p-3 rounded-full">
+            <i class="fas fa-times-circle text-red-600"></i>
+          </div>
+        </div>
+        <p class="text-xs text-green-600 mt-2 font-body"><i class="fas fa-arrow-down mr-1"></i> 5% from last week</p>
+      </div>
+    </div>
+
+    <!-- Doctor Schedules Table -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold font-body">Today's Doctor Schedules</h3>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Doctor</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Department</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Schedule</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Available Slots</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Booked Appointments</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let schedule of paginatedSchedules" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full doctor-avatar" [src]="schedule.avatar" [alt]="schedule.name"
+                         title="Doctor Avatar">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900 font-body">{{schedule.name}}</div>
+                    <div class="text-sm text-gray-500 font-body">{{schedule.email}}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{schedule.department}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{schedule.schedule}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 font-body">
+                  {{schedule.availableSlots}} slots
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center font-body">
+                {{schedule.bookedAppointments}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium font-body">
+                <button (click)="openDoctorModal(schedule.id)" class="text-teal-800 hover:text-teal-600 mr-3 font-body">View</button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredSchedules.length === 0">
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500 font-body">
+                No schedules found matching your criteria
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" *ngIf="filteredSchedules.length > itemsPerPage">
+        <button (click)="prevSchedulePage()" [disabled]="currentSchedulePage === 1" class="font-body">Previous</button>
+        <button *ngFor="let page of getSchedulePages()"
+                (click)="goToSchedulePage(page)"
+                [class.active]="page === currentSchedulePage"
+                class="font-body">
+          {{page}}
+        </button>
+        <button (click)="nextSchedulePage()" [disabled]="currentSchedulePage === totalSchedulePages" class="font-body">Next</button>
+      </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold font-body">Upcoming Appointments (Next 7 Days)</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let appointment of paginatedUpcomingAppointments" class="appointment-card bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-medium text-gray-900 font-body">{{appointment.patientName}}</h4>
+            <span class="text-xs px-2 py-1 rounded-full font-body" [ngClass]="getStatusClass(appointment.status)">
+              {{getStatusText(appointment.status)}}
+            </span>
+          </div>
+          <p class="text-sm text-gray-600 mb-1 font-body">{{appointment.doctorName}}</p>
+          <p class="text-sm text-gray-600 mb-2 font-body">{{appointment.doctorSpecialization}}</p>
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-xs text-gray-500 font-body">Appointment ID</p>
+              <p class="text-sm font-medium font-body">{{appointment.id}}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-gray-500 font-body">Date & Time</p>
+              <p class="text-sm font-medium font-body">{{formatAppointmentDate(appointment.appointmentDate)}} at {{formatAppointmentTime(appointment.appointmentTime)}}</p>
+            </div>
+          </div>
+          <div class="mt-3 flex justify-end space-x-2">
+            <button (click)="openAppointmentModal(appointment.id, 'upcoming')" class="text-xs bg-teal-800 text-white hover:bg-teal-700 px-2 py-1 rounded font-body">View</button>
+          </div>
+        </div>
+        <div *ngIf="filteredUpcomingAppointments.length === 0" class="col-span-3 text-center py-4 text-gray-500 font-body">
+          No upcoming appointments found matching your criteria
+        </div>
+      </div>
+      <div class="pagination" *ngIf="filteredUpcomingAppointments.length > itemsPerPage">
+        <button (click)="prevUpcomingPage()" [disabled]="currentUpcomingPage === 1" class="font-body">Previous</button>
+        <button *ngFor="let page of getUpcomingPages()"
+                (click)="goToUpcomingPage(page)"
+                [class.active]="page === currentUpcomingPage"
+                class="font-body">
+          {{page}}
+        </button>
+        <button (click)="nextUpcomingPage()" [disabled]="currentUpcomingPage === totalUpcomingPages" class="font-body">Next</button>
+      </div>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="bg-white rounded-lg shadow-sm p-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold font-body">Recent Appointments</h3>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Appointment ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Patient</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Doctor</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Date & Time</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Department</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-body">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let appointment of paginatedRecentAppointments" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 font-body">
+                {{appointment.id}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{appointment.patientName}}</div>
+                <div class="text-sm text-gray-500 font-body">{{appointment.patientEmail}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{appointment.doctorName}}</div>
+                <div class="text-sm text-gray-500 font-body">{{appointment.doctorSpecialization}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{formatAppointmentDate(appointment.appointmentDate)}} at {{formatAppointmentTime(appointment.appointmentTime)}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 font-body">{{appointment.doctorSpecialization}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full font-body" [ngClass]="getStatusClass(appointment.status)">
+                  {{getStatusText(appointment.status)}}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium font-body">
+                <button (click)="openAppointmentModal(appointment.id, 'recent')" class="text-teal-800 hover:text-teal-600 mr-3 font-body">Details</button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredRecentAppointments.length === 0">
+              <td colspan="7" class="px-6 py-4 text-center text-gray-500 font-body">
+                No recent appointments found matching your criteria
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" *ngIf="filteredRecentAppointments.length > itemsPerPage">
+        <button (click)="prevRecentPage()" [disabled]="currentRecentPage === 1" class="font-body">Previous</button>
+        <button *ngFor="let page of getRecentPages()"
+                (click)="goToRecentPage(page)"
+                [class.active]="page === currentRecentPage"
+                class="font-body">
+          {{page}}
+        </button>
+        <button (click)="nextRecentPage()" [disabled]="currentRecentPage === totalRecentPages" class="font-body">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor Details Modal -->
+<div class="modal-overlay" *ngIf="showDoctorModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title font-body">Doctor Details</h3>
+      <button class="close-button" (click)="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="selectedDoctor">
+      <div class="flex items-center mb-4">
+        <img [src]="selectedDoctor.avatar" [alt]="selectedDoctor.name" class="doctor-avatar rounded-full mr-4">
+        <div>
+          <h4 class="text-lg font-bold font-body">{{selectedDoctor.name}}</h4>
+          <p class="text-gray-600 font-body">{{selectedDoctor.department}}</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-gray-500 font-body">Email</p>
+          <p class="text-sm font-body">{{selectedDoctor.email}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Phone</p>
+          <p class="text-sm font-body">{{selectedDoctor.phone}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Schedule</p>
+          <p class="text-sm font-body">{{selectedDoctor.schedule}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Available Slots</p>
+          <p class="text-sm font-body">{{selectedDoctor.availableSlots}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Booked Appointments</p>
+          <p class="text-sm font-body">{{selectedDoctor.bookedAppointments}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Experience</p>
+          <p class="text-sm font-body">{{selectedDoctor.experience}}</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-sm text-gray-500 font-body">Qualifications</p>
+          <p class="text-sm font-body">{{selectedDoctor.qualifications}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Appointment Details Modal -->
+<div class="modal-overlay" *ngIf="showAppointmentModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title font-body">Appointment Details</h3>
+      <button class="close-button" (click)="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" *ngIf="selectedAppointment">
+      <div class="mb-4">
+        <h4 class="text-lg font-bold mb-2 font-body">{{selectedAppointment.patientName}}</h4>
+        <span class="px-2 py-1 rounded-full text-sm font-body" [ngClass]="getStatusClass(selectedAppointment.status)">
+          <i [class]="getStatusIcon(selectedAppointment.status)" class="mr-1"></i>
+          {{selectedAppointment.status}}
+        </span>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-gray-500 font-body">Appointment ID</p>
+          <p class="text-sm font-body">{{selectedAppointment.id}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Date & Time</p>
+          <p class="text-sm font-body">{{formatAppointmentDate(selectedAppointment.appointmentDate)}} at {{formatAppointmentTime(selectedAppointment.appointmentTime)}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Patient Email</p>
+          <p class="text-sm font-body">{{selectedAppointment.patientEmail}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Patient Phone</p>
+          <p class="text-sm font-body">{{selectedAppointment.patientPhone}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Doctor</p>
+          <p class="text-sm font-body">{{selectedAppointment.doctorName}}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 font-body">Specialization</p>
+          <p class="text-sm font-body">{{selectedAppointment.doctorSpecialization}}</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-sm text-gray-500 font-body">Reason</p>
+          <p class="text-sm font-body">{{selectedAppointment.purpose}}</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-sm text-gray-500 font-body">Notes</p>
+          <p class="text-sm font-body">{{selectedAppointment.notes || 'No notes available'}}</p>
+        </div>
+        <div class="col-span-2" *ngIf="selectedAppointment.insuranceProvider">
+          <p class="text-sm text-gray-500 font-body">Insurance Provider</p>
+          <p class="text-sm font-body">{{selectedAppointment.insuranceProvider}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

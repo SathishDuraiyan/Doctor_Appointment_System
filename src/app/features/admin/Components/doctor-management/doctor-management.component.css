@@ -1,0 +1,49 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Julius+Sans+One&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Oswald:wght@200..700&display=swap');
+
+
+@import "tailwindcss";
+
+@layer utilities {
+    .font-title {
+        font-family: 'Julius Sans One', sans-serif;
+    }
+    .font-body {
+        font-family: 'Instrument Sans', sans-serif;
+    }
+    .font-banner {
+        font-family: 'Oswald', sans-serif;
+    }
+    .font-lin {
+        font-family: 'Literata', serif;
+    }
+    .text-gradient-gold {
+        background: linear-gradient(90deg, #ffe864, #745315);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+  }
+.doctor-avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.status-badge {
+  @apply px-2 py-1 text-xs rounded-full;
+}
+
+.status-pending {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-active {
+  @apply bg-green-100 text-green-800;
+}
+
+.status-inactive {
+  @apply bg-red-100 text-red-800;
+}
+

@@ -1,0 +1,168 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Medical Records</h1>
+          <p class="text-gray-600 mt-1">Your completed appointments and medical history</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button (click)="refreshMedicalRecords()"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  [disabled]="isLoading"
+                  title="Refresh medical records">
+            <i class="fas fa-sync-alt mr-2" [class.animate-spin]="isLoading"></i>
+            Refresh
+          </button>
+          <div class="text-right">
+            <p class="text-sm text-gray-500">Patient</p>
+            <p class="font-semibold text-gray-900">{{ currentUser?.name || 'Patient' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="completedAppointments.length > 0" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Medical History Summary</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-teal-600">{{ completedAppointments.length }}</div>
+            <div class="text-sm text-gray-600">Total Appointments</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{{ getDoctorCount() }}</div>
+            <div class="text-sm text-gray-600">Doctors Consulted</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">{{ getSpecializationCount() }}</div>
+            <div class="text-sm text-gray-600">Specializations</div>
+          </div>
+        </div>
+      </div>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading medical records...</p>
+      </div>
+    </div>
+
+    <!-- Medical Records -->
+    <div *ngIf="!isLoading">
+      <!-- Empty State -->
+      <div *ngIf="completedAppointments.length === 0" class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div class="text-center">
+          <div class="text-gray-400 mb-4">
+            <i class="fas fa-file-medical-alt text-6xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">No Medical Records Found</h3>
+          <p class="text-gray-600 mb-6">You don't have any completed appointments yet.</p>
+          <button (click)="navigateToBooking()"
+                  class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+            <i class="fas fa-calendar-plus mr-2"></i>
+            Book Your First Appointment
+          </button>
+        </div>
+      </div>
+
+      <!-- Medical Records List -->
+      <div *ngIf="completedAppointments.length > 0" class="space-y-6">
+        <div *ngFor="let appointment of completedAppointments"
+             class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+
+          <!-- Record Header -->
+          <div class="bg-teal-50 px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user-md text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900">Dr. {{ appointment.doctorName }}</h3>
+                  <p class="text-sm text-gray-600">{{ appointment.doctorSpecialization }}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-medium text-gray-900">{{ formatDate(appointment.appointmentDate) }}</p>
+                <p class="text-sm text-gray-600">{{ formatTime(appointment.appointmentTime) }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Record Details -->
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Appointment Details -->
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Appointment Details</h4>
+                <div class="space-y-2">
+                  <div>
+                    <span class="text-sm font-medium text-gray-600">Purpose:</span>
+                    <p class="text-sm text-gray-900">{{ appointment.purpose }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600">Duration:</span>
+                    <p class="text-sm text-gray-900">{{ appointment.duration || 30 }} minutes</p>
+                  </div>
+                  <div *ngIf="appointment.insuranceProvider">
+                    <span class="text-sm font-medium text-gray-600">Insurance:</span>
+                    <p class="text-sm text-gray-900">{{ appointment.insuranceProvider }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Medical Notes -->
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Medical Notes</h4>
+                <div class="space-y-2">
+                  <div>
+                    <span class="text-sm font-medium text-gray-600">Notes:</span>
+                    <p class="text-sm text-gray-900">{{ appointment.notes || 'No notes recorded' }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600">Status:</span>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      <i class="fas fa-check-circle mr-1"></i>
+                      Completed
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-6 flex flex-wrap gap-3">
+              <button (click)="viewAppointmentDetails(appointment)"
+                      class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <i class="fas fa-eye mr-2"></i>
+                View Details
+              </button>
+
+              <button (click)="changeAppointmentDate(appointment)"
+                      class="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      title="Book a new appointment with the same doctor">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                Book Follow-up
+              </button>
+
+              <button (click)="bookReAppointment(appointment)"
+                      class="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+                <i class="fas fa-calendar-plus mr-2"></i>
+                Book New Appointment with Dr. {{ appointment.doctorName.split(' ').slice(-1)[0] }}
+              </button>
+
+              <button (click)="bookReAppointmentSamePurpose(appointment)"
+                      class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-redo mr-2"></i>
+                Same Purpose: "{{ appointment.purpose }}"
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>

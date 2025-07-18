@@ -1,0 +1,5 @@
+/* Patient Layout Styles */
+.patient-layout {
+  min-height: 100vh;
+  display: flex;
+}

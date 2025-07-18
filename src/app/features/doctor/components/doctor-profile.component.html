@@ -1,0 +1,74 @@
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
+  <div class="flex items-center mb-6">
+    <img [src]="profileForm.value.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg'" class="w-20 h-20 rounded-full border-2 border-cyan-600 object-cover mr-4" alt="Doctor Avatar">
+    <div>
+      <h2 class="text-2xl font-bold text-cyan-800">{{ profileForm.value.full_name }}</h2>
+      <p class="text-gray-600">{{ profileForm.value.department }}</p>
+      <div class="mt-2 flex items-center gap-2">
+        <span class="text-xs bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">{{ profileForm.value.status | titlecase }}</span>
+        <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">Experience: {{ profileForm.value.experience }} yrs</span>
+      </div>
+    </div>
+    <div class="ml-auto">
+      <button *ngIf="!editMode" (click)="enableEdit()" class="px-4 py-2 bg-cyan-700 text-white rounded hover:bg-cyan-800">Edit</button>
+      <button *ngIf="editMode" (click)="cancelEdit()" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">Cancel</button>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-medium text-gray-700">Profile Completion</span>
+      <div class="w-48 bg-gray-200 rounded-full h-3">
+        <div class="bg-cyan-600 h-3 rounded-full" [style.width]="profileCompletion + '%'" ></div>
+      </div>
+      <span class="text-sm font-semibold text-cyan-700">{{ profileCompletion }}%</span>
+    </div>
+  </div>
+
+  <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" autocomplete="off">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input formControlName="full_name" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input formControlName="email" readonly class="form-input w-full bg-gray-100" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+        <input formControlName="contact_number" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Department</label>
+        <input formControlName="department" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Qualification</label>
+        <input formControlName="qualification" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Experience (years)</label>
+        <input formControlName="experience" type="number" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Licence Key</label>
+        <input formControlName="licence_key" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Schedule</label>
+        <input formControlName="schedule" [readonly]="!editMode" class="form-input w-full" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Status</label>
+        <select formControlName="status" [disabled]="!editMode" class="form-input w-full">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="editMode" class="mt-6 flex justify-end">
+      <button type="submit" class="px-6 py-2 bg-cyan-700 text-white rounded hover:bg-cyan-800">Save</button>
+    </div>
+  </form>
+</div>

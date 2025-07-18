@@ -1,0 +1,54 @@
+<!-- report-management.component.html -->
+<div class="bg-white p-4 flex flex-col md:flex-row justify-between items-center shadow-sm">
+  <div class="flex items-center space-x-4 mb-4 md:mb-0">
+    <!-- <button
+      type="button"
+      title="Go back"
+      class="bg-teal-800 text-white px-3 py-1 rounded flex items-center text-sm cursor-pointer hover:bg-teal-900 transition-colors"
+    >
+      <i class="fas fa-arrow-left mr-1"></i> Back
+    </button> -->
+    <h1 class="text-xl font-semibold text-gray-800">Report Management</h1>
+  </div>
+  <div class="flex items-center space-x-2">
+    <span class="text-sm text-gray-600 hidden sm:inline">Today's Date</span>
+    <span class="text-sm font-semibold">{{ currentDate | date:'dd/MM/yyyy' }}</span>
+    <div class="w-6 h-6 flex items-center justify-center">
+      <i class="fas fa-calendar-alt text-gray-600"></i>
+    </div>
+  </div>
+</div>
+
+<main class="p-4 md:p-6">
+  <div class="pb-5 flex items-center">
+    <button
+      type="button"
+      (click)="setActiveTab('doctor')"
+      [ngClass]="{
+        'bg-teal-700 text-white': activeTab === 'doctor',
+        'bg-gray-200 text-gray-700': activeTab !== 'doctor'
+      }"
+      title="View doctor reports"
+      class="p-3 cursor-pointer hover:bg-teal-800 hover:text-white transition-colors rounded-l-md"
+    >
+      Doctor Report
+    </button>
+    <button
+      type="button"
+      (click)="setActiveTab('patient')"
+      [ngClass]="{
+        'bg-teal-700 text-white': activeTab === 'patient',
+        'bg-gray-200 text-gray-700': activeTab !== 'patient'
+      }"
+      title="View patient reports"
+      class="p-3 cursor-pointer hover:bg-teal-800 hover:text-white transition-colors rounded-r-md"
+    >
+      Patient Report
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-6 report-section">
+    <app-doctor-report *ngIf="activeTab === 'doctor'"></app-doctor-report>
+    <app-patient-report *ngIf="activeTab === 'patient'"></app-patient-report>
+  </div>
+</main>

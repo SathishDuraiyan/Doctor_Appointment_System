@@ -1,0 +1,347 @@
+doctor_management_system/
+├─ .angular/
+│  └─ cache/
+│     └─ 19.2.15/
+│        └─ doctor_management_system/
+│           ├─ vite/
+│           │  ├─ deps/
+│           │  │  ├─ _metadata.json
+│           │  │  ├─ @angular_common.js
+│           │  │  ├─ @angular_common.js.map
+│           │  │  ├─ @angular_core.js
+│           │  │  ├─ @angular_core.js.map
+│           │  │  ├─ @angular_forms.js
+│           │  │  ├─ @angular_forms.js.map
+│           │  │  ├─ @angular_platform-browser.js
+│           │  │  ├─ @angular_platform-browser.js.map
+│           │  │  ├─ @angular_router.js
+│           │  │  ├─ @angular_router.js.map
+│           │  │  ├─ chunk-4S3KYZTJ.js
+│           │  │  ├─ chunk-4S3KYZTJ.js.map
+│           │  │  ├─ chunk-5EDOULXC.js
+│           │  │  ├─ chunk-5EDOULXC.js.map
+│           │  │  ├─ chunk-O3Y4EQOG.js
+│           │  │  ├─ chunk-O3Y4EQOG.js.map
+│           │  │  ├─ chunk-OEOH75ZL.js
+│           │  │  ├─ chunk-OEOH75ZL.js.map
+│           │  │  ├─ chunk-PEBH6BBU.js
+│           │  │  ├─ chunk-PEBH6BBU.js.map
+│           │  │  ├─ chunk-TXDUYLVM.js
+│           │  │  ├─ chunk-TXDUYLVM.js.map
+│           │  │  ├─ chunk-WPM5VTLQ.js
+│           │  │  ├─ chunk-WPM5VTLQ.js.map
+│           │  │  ├─ chunk-WUUVWCMF.js
+│           │  │  ├─ chunk-WUUVWCMF.js.map
+│           │  │  ├─ html2canvas.esm-ZNF64ISW.js
+│           │  │  ├─ html2canvas.esm-ZNF64ISW.js.map
+│           │  │  ├─ index.es-5BBSDLYC.js
+│           │  │  ├─ index.es-5BBSDLYC.js.map
+│           │  │  ├─ jspdf-autotable.js
+│           │  │  ├─ jspdf-autotable.js.map
+│           │  │  ├─ jspdf.js
+│           │  │  ├─ jspdf.js.map
+│           │  │  ├─ package.json
+│           │  │  ├─ purify.es-64WHFMY6.js
+│           │  │  ├─ purify.es-64WHFMY6.js.map
+│           │  │  ├─ rxjs_operators.js
+│           │  │  ├─ rxjs_operators.js.map
+│           │  │  ├─ rxjs.js
+│           │  │  └─ rxjs.js.map
+│           │  └─ deps_ssr/
+│           │     ├─ _metadata.json
+│           │     └─ package.json
+│           ├─ .tsbuildinfo
+│           ├─ angular-compiler.db
+│           └─ angular-compiler.db-lock
+├─ .vscode/
+│  ├─ extensions.json
+│  ├─ launch.json
+│  └─ tasks.json
+├─ dist/
+│  └─ doctor_management_system/
+│     ├─ browser/
+│     │  ├─ assets/
+│     │  │  ├─ b3.jpg
+│     │  │  ├─ banner-1.jpg
+│     │  │  ├─ banner-2.jpg
+│     │  │  ├─ banner-5.jpg
+│     │  │  ├─ feedback.jpg
+│     │  │  ├─ login.jpg
+│     │  │  ├─ login2.jpg
+│     │  │  ├─ login3.jpg
+│     │  │  ├─ login4.jpg
+│     │  │  ├─ new-bg-1.jpg
+│     │  │  ├─ new-bg-2.jpg
+│     │  │  └─ new-bg-3.jpg
+│     │  ├─ admin-dashboard.component.css.map
+│     │  ├─ chunk-7YWLATDR.js
+│     │  ├─ chunk-7YWLATDR.js.map
+│     │  ├─ chunk-AWZOTSKS.js
+│     │  ├─ chunk-AWZOTSKS.js.map
+│     │  ├─ chunk-LYJJN5I5.js
+│     │  ├─ chunk-LYJJN5I5.js.map
+│     │  ├─ chunk-PVPOSRDS.js
+│     │  ├─ chunk-PVPOSRDS.js.map
+│     │  ├─ chunk-YP43Q66R.js
+│     │  ├─ chunk-YP43Q66R.js.map
+│     │  ├─ content-management.component.css.map
+│     │  ├─ department-card.component.css.map
+│     │  ├─ doctor-management.component.css.map
+│     │  ├─ doctor-report.component.css.map
+│     │  ├─ favicon.ico
+│     │  ├─ footer.component.css.map
+│     │  ├─ g-feedback.component.css.map
+│     │  ├─ help-center.component.css.map
+│     │  ├─ home.component.css.map
+│     │  ├─ hospital-slider.component.css.map
+│     │  ├─ index.html
+│     │  ├─ login.component.css.map
+│     │  ├─ main.js
+│     │  ├─ main.js.map
+│     │  ├─ navbar.component.css.map
+│     │  ├─ patient-management.component.css.map
+│     │  ├─ patient-report.component.css.map
+│     │  ├─ polyfills.js
+│     │  ├─ polyfills.js.map
+│     │  ├─ report-management.component.css.map
+│     │  ├─ sidebar.component.css.map
+│     │  ├─ styles.css
+│     │  └─ styles.css.map
+│     └─ prerendered-routes.json
+├─ public/
+│  ├─ assets/
+│  │  ├─ b3.jpg
+│  │  ├─ banner-1.jpg
+│  │  ├─ banner-2.jpg
+│  │  ├─ banner-5.jpg
+│  │  ├─ feedback.jpg
+│  │  ├─ login.jpg
+│  │  ├─ login2.jpg
+│  │  ├─ login3.jpg
+│  │  ├─ login4.jpg
+│  │  ├─ new-bg-1.jpg
+│  │  ├─ new-bg-2.jpg
+│  │  └─ new-bg-3.jpg
+│  └─ favicon.ico
+├─ src/
+│  ├─ app/
+│  │  ├─ auth/
+│  │  │  ├─ account-creation/
+│  │  │  │  ├─ account-creation.component.css
+│  │  │  │  ├─ account-creation.component.html
+│  │  │  │  ├─ account-creation.component.spec.ts
+│  │  │  │  └─ account-creation.component.ts
+│  │  │  ├─ login/
+│  │  │  │  ├─ login.component.css
+│  │  │  │  ├─ login.component.html
+│  │  │  │  ├─ login.component.spec.ts
+│  │  │  │  └─ login.component.ts
+│  │  │  └─ register/
+│  │  │     ├─ register.component.css
+│  │  │     ├─ register.component.html
+│  │  │     ├─ register.component.spec.ts
+│  │  │     └─ register.component.ts
+│  │  ├─ core/
+│  │  │  ├─ models/
+│  │  │  │  ├─ appointment.model.ts
+│  │  │  │  ├─ report.model.ts
+│  │  │  │  └─ user.model.ts
+│  │  │  └─ services/
+│  │  │     ├─ admin.service.spec.ts
+│  │  │     ├─ admin.service.ts
+│  │  │     ├─ appointment.service.ts
+│  │  │     ├─ auth.service.spec.ts
+│  │  │     └─ auth.service.ts
+│  │  ├─ features/
+│  │  │  ├─ admin/
+│  │  │  │  └─ Components/
+│  │  │  │     ├─ admin-appointment-management/
+│  │  │  │     │  ├─ admin-appointment-management.component.css
+│  │  │  │     │  ├─ admin-appointment-management.component.html
+│  │  │  │     │  └─ admin-appointment-management.component.ts
+│  │  │  │     ├─ admin-dashboard/
+│  │  │  │     │  ├─ admin-dashboard.component.css
+│  │  │  │     │  ├─ admin-dashboard.component.html
+│  │  │  │     │  ├─ admin-dashboard.component.spec.ts
+│  │  │  │     │  └─ admin-dashboard.component.ts
+│  │  │  │     ├─ admin-doctor-schedule/
+│  │  │  │     │  ├─ admin-doctor-schedule.component.css
+│  │  │  │     │  ├─ admin-doctor-schedule.component.html
+│  │  │  │     │  └─ admin-doctor-schedule.component.ts
+│  │  │  │     ├─ admin-layout/
+│  │  │  │     │  ├─ admin-layout.component.css
+│  │  │  │     │  ├─ admin-layout.component.html
+│  │  │  │     │  ├─ admin-layout.component.spec.ts
+│  │  │  │     │  └─ admin-layout.component.ts
+│  │  │  │     ├─ content-management/
+│  │  │  │     │  ├─ content-management.component.css
+│  │  │  │     │  ├─ content-management.component.html
+│  │  │  │     │  ├─ content-management.component.spec.ts
+│  │  │  │     │  └─ content-management.component.ts
+│  │  │  │     ├─ doctor-login-test/
+│  │  │  │     │  └─ doctor-login-test.component.ts
+│  │  │  │     ├─ doctor-management/
+│  │  │  │     │  ├─ doctor-management.component.css
+│  │  │  │     │  ├─ doctor-management.component.html
+│  │  │  │     │  ├─ doctor-management.component.spec.ts
+│  │  │  │     │  └─ doctor-management.component.ts
+│  │  │  │     ├─ doctor-report/
+│  │  │  │     │  ├─ doctor-report.component.css
+│  │  │  │     │  ├─ doctor-report.component.html
+│  │  │  │     │  ├─ doctor-report.component.spec.ts
+│  │  │  │     │  ├─ doctor-report.component.ts
+│  │  │  │     │  ├─ report.model.ts
+│  │  │  │     │  └─ report.service.ts
+│  │  │  │     ├─ help-center/
+│  │  │  │     │  ├─ help-center.component.css
+│  │  │  │     │  ├─ help-center.component.html
+│  │  │  │     │  ├─ help-center.component.spec.ts
+│  │  │  │     │  └─ help-center.component.ts
+│  │  │  │     ├─ patient-management/
+│  │  │  │     │  ├─ patient-management.component.css
+│  │  │  │     │  ├─ patient-management.component.html
+│  │  │  │     │  ├─ patient-management.component.spec.ts
+│  │  │  │     │  └─ patient-management.component.ts
+│  │  │  │     ├─ patient-report/
+│  │  │  │     │  ├─ patient-report.component.css
+│  │  │  │     │  ├─ patient-report.component.html
+│  │  │  │     │  └─ patient-report.component.ts
+│  │  │  │     ├─ report-management/
+│  │  │  │     │  ├─ report-management.component.css
+│  │  │  │     │  ├─ report-management.component.html
+│  │  │  │     │  ├─ report-management.component.spec.ts
+│  │  │  │     │  └─ report-management.component.ts
+│  │  │  │     ├─ session-demo/
+│  │  │  │     │  └─ session-demo.component.ts
+│  │  │  │     ├─ session-management/
+│  │  │  │     │  └─ session-management.component.ts
+│  │  │  │     └─ sidebar/
+│  │  │  │        ├─ sidebar.component.css
+│  │  │  │        ├─ sidebar.component.html
+│  │  │  │        ├─ sidebar.component.spec.ts
+│  │  │  │        └─ sidebar.component.ts
+│  │  │  ├─ debug/
+│  │  │  │  └─ appointment-debug/
+│  │  │  │     └─ appointment-debug.component.ts
+│  │  │  ├─ doctor/
+│  │  │  │  ├─ dashboard/
+│  │  │  │  │  └─ doctor-dashboard.component.ts
+│  │  │  │  └─ schedule/
+│  │  │  │     ├─ doctor-schedule.component.css
+│  │  │  │     ├─ doctor-schedule.component.html
+│  │  │  │     ├─ doctor-schedule.component.spec.ts
+│  │  │  │     └─ doctor-schedule.component.ts
+│  │  │  ├─ home/
+│  │  │  │  ├─ home.component.css
+│  │  │  │  ├─ home.component.html
+│  │  │  │  ├─ home.component.spec.ts
+│  │  │  │  └─ home.component.ts
+│  │  │  ├─ patient/
+│  │  │  │  ├─ appointment-booking/
+│  │  │  │  │  ├─ appointment-booking.component.css
+│  │  │  │  │  ├─ appointment-booking.component.html
+│  │  │  │  │  ├─ appointment-booking.component.spec.ts
+│  │  │  │  │  └─ appointment-booking.component.ts
+│  │  │  │  ├─ appointments/
+│  │  │  │  │  ├─ patient-appointments.component.css
+│  │  │  │  │  ├─ patient-appointments.component.html
+│  │  │  │  │  └─ patient-appointments.component.ts
+│  │  │  │  ├─ dashboard/
+│  │  │  │  │  ├─ patient-dashboard.component.css
+│  │  │  │  │  ├─ patient-dashboard.component.html
+│  │  │  │  │  └─ patient-dashboard.component.ts
+│  │  │  │  ├─ medical-records/
+│  │  │  │  │  ├─ medical-records.component.css
+│  │  │  │  │  ├─ medical-records.component.html
+│  │  │  │  │  └─ medical-records.component.ts
+│  │  │  │  ├─ patient-layout/
+│  │  │  │  │  ├─ patient-layout.component.css
+│  │  │  │  │  ├─ patient-layout.component.html
+│  │  │  │  │  └─ patient-layout.component.ts
+│  │  │  │  ├─ patient-sidebar/
+│  │  │  │  │  ├─ patient-sidebar.component.css
+│  │  │  │  │  ├─ patient-sidebar.component.html
+│  │  │  │  │  ├─ patient-sidebar.component.spec.ts
+│  │  │  │  │  └─ patient-sidebar.component.ts
+│  │  │  │  ├─ profile-setup/
+│  │  │  │  │  ├─ profile-setup.component.css
+│  │  │  │  │  ├─ profile-setup.component.html
+│  │  │  │  │  └─ profile-setup.component.ts
+│  │  │  │  ├─ profile-setup-demo/
+│  │  │  │  │  └─ profile-setup-demo.component.ts
+│  │  │  │  └─ profile-setup-modal/
+│  │  │  │     ├─ profile-setup-modal.component.css
+│  │  │  │     ├─ profile-setup-modal.component.html
+│  │  │  │     └─ profile-setup-modal.component.ts
+│  │  │  └─ test/
+│  │  │     └─ doctor-test.component.ts
+│  │  ├─ guards/
+│  │  │  ├─ auth.guard.spec.ts
+│  │  │  ├─ auth.guard.ts
+│  │  │  ├─ login.guard.spec.ts
+│  │  │  ├─ login.guard.ts
+│  │  │  ├─ role.guard.spec.ts
+│  │  │  ├─ role.guard.ts
+│  │  │  ├─ session.guard.spec.ts
+│  │  │  └─ session.guard.ts
+│  │  ├─ hospital-slider/
+│  │  │  ├─ hospital-slider.component.css
+│  │  │  ├─ hospital-slider.component.html
+│  │  │  ├─ hospital-slider.component.spec.ts
+│  │  │  └─ hospital-slider.component.ts
+│  │  ├─ shared/
+│  │  │  ├─ department-card/
+│  │  │  │  ├─ department-card.component.css
+│  │  │  │  ├─ department-card.component.html
+│  │  │  │  ├─ department-card.component.spec.ts
+│  │  │  │  └─ department-card.component.ts
+│  │  │  ├─ footer/
+│  │  │  │  ├─ footer.component.css
+│  │  │  │  ├─ footer.component.html
+│  │  │  │  ├─ footer.component.spec.ts
+│  │  │  │  └─ footer.component.ts
+│  │  │  ├─ g-feedback/
+│  │  │  │  ├─ g-feedback.component.css
+│  │  │  │  ├─ g-feedback.component.html
+│  │  │  │  ├─ g-feedback.component.spec.ts
+│  │  │  │  └─ g-feedback.component.ts
+│  │  │  └─ navbar/
+│  │  │     ├─ navbar.component.css
+│  │  │     ├─ navbar.component.html
+│  │  │     ├─ navbar.component.spec.ts
+│  │  │     └─ navbar.component.ts
+│  │  ├─ app.component.css
+│  │  ├─ app.component.html
+│  │  ├─ app.component.spec.ts
+│  │  ├─ app.component.ts
+│  │  ├─ app.config.ts
+│  │  ├─ app.routes.ts
+│  │  └─ dire.txt
+│  ├─ index.html
+│  ├─ main.ts
+│  └─ styles.css
+├─ .editorconfig
+├─ .gitignore
+├─ .hintrc
+├─ .postcssrc.json
+├─ angular.json
+├─ APPOINTMENT_BOOKING_TEST_PLAN.md
+├─ APPOINTMENT_SYSTEM_SUMMARY.md
+├─ debug-login.html
+├─ package-lock.json
+├─ package.json
+├─ public.zip
+├─ README.md
+├─ ROLE_BASED_SESSIONS.md
+├─ src (2).zip
+├─ src.zip
+├─ tailwind.config.js
+├─ test-admin-dashboard.js
+├─ test-appointment-flow.js
+├─ test-booking-debug.js
+├─ test-patient-booking.js
+├─ test-users.js
+├─ test.html
+├─ tsconfig.app.json
+├─ tsconfig.json
+└─ tsconfig.spec.json

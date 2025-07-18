@@ -1,0 +1,280 @@
+<!-- Profile Setup Modal -->
+<div *ngIf="isVisible"
+     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+     (click)="onBackdropClick($event)">
+  <div class="relative top-4 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 shadow-lg rounded-md bg-white">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+      <h3 class="text-xl font-semibold text-gray-900">
+        <i class="fas fa-user-edit mr-2 text-blue-600"></i>
+        Complete Your Profile
+      </h3>
+      <button (click)="closeModal()"
+              class="text-gray-400 hover:text-gray-600 transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="py-4 max-h-96 overflow-y-auto">
+      <form (ngSubmit)="saveProfile()" class="space-y-6">
+        <!-- Personal Information Section -->
+        <div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-user mr-2 text-blue-600"></i>
+            Personal Information
+          </h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Full Name -->
+            <div>
+              <label class="block text-sm font-medium text-red-700 mb-1">
+                Full Name *
+              </label>
+              <input type="text"
+                     [(ngModel)]="profile.fullName"
+                     name="fullName"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input type="email"
+                     [(ngModel)]="profile.email"
+                     name="email"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number *
+              </label>
+              <input type="tel"
+                     [(ngModel)]="profile.phone"
+                     name="phone"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Date of Birth -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Date of Birth
+              </label>
+              <input type="date"
+                     [(ngModel)]="profile.dateOfBirth"
+                     name="dateOfBirth"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Gender -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Gender
+              </label>
+              <select [(ngModel)]="profile.gender"
+                      name="gender"
+                      title="Select your gender"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <!-- Blood Type -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Blood Type
+              </label>
+              <select [(ngModel)]="profile.bloodType"
+                      name="bloodType"
+                      title="Select your blood type"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Select Blood Type</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Address
+            </label>
+            <textarea [(ngModel)]="profile.address"
+                      name="address"
+                      rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your complete address"></textarea>
+          </div>
+        </div>
+
+        <!-- Emergency Contact Section -->
+        <div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-phone mr-2 text-red-600"></i>
+            Emergency Contact
+          </h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Emergency Contact Name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Contact Name
+              </label>
+              <input type="text"
+                     [(ngModel)]="profile.emergencyContact"
+                     name="emergencyContact"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Emergency Phone -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Contact Phone
+              </label>
+              <input type="tel"
+                     [(ngModel)]="profile.emergencyPhone"
+                     name="emergencyPhone"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Emergency Relation -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Relationship
+              </label>
+              <input type="text"
+                     [(ngModel)]="profile.emergencyRelation"
+                     name="emergencyRelation"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                     placeholder="e.g., Spouse, Parent, Sibling">
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Information Section -->
+        <div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-heart mr-2 text-pink-600"></i>
+            Medical Information
+          </h4>
+
+          <div class="space-y-4">
+            <!-- Allergies -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Allergies
+              </label>
+              <textarea [(ngModel)]="profile.allergies"
+                        name="allergies"
+                        rows="2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="List any allergies (medications, food, etc.)"></textarea>
+            </div>
+
+            <!-- Current Medications -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Current Medications
+              </label>
+              <textarea [(ngModel)]="profile.currentMedications"
+                        name="currentMedications"
+                        rows="2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="List current medications and dosages"></textarea>
+            </div>
+
+            <!-- Medical History -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Medical History
+              </label>
+              <textarea [(ngModel)]="profile.medicalHistory"
+                        name="medicalHistory"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Previous surgeries, chronic conditions, etc."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Insurance Information Section -->
+        <div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-shield-alt mr-2 text-green-600"></i>
+            Insurance Information
+          </h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Insurance Provider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Insurance Provider
+              </label>
+              <input type="text"
+                     [(ngModel)]="profile.insurance"
+                     name="insurance"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <!-- Policy Number -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Policy Number
+              </label>
+              <input type="text"
+                     [(ngModel)]="profile.policyNumber"
+                     name="policyNumber"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success Toast -->
+    <div *ngIf="showToast"
+         class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+      <i class="fas fa-check-circle mr-2"></i>
+      {{ toastMessage }}
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+      <div class="text-sm text-gray-600">
+        <i class="fas fa-info-circle mr-1"></i>
+        Fields marked with * are required
+      </div>
+      <div class="flex space-x-3">
+        <button type="button"
+                (click)="closeModal()"
+                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button type="button"
+                (click)="saveProfile()"
+                [disabled]="isSubmitting"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          <i *ngIf="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+          <i *ngIf="!isSubmitting" class="fas fa-save mr-2"></i>
+          {{ isSubmitting ? 'Saving...' : 'Save Profile' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
